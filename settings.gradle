@@ -1,0 +1,10 @@
+rootProject.name = 'moodly-api'
+
+include 'common'
+include 'auth-service'
+include 'user-service'
+include 'catalog-service'
+include 'order-service'
+include 'coupon-service'
+include 'notification-service'
+include 'review-service'
