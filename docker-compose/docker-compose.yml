@@ -1,0 +1,33 @@
+services:
+  moodly-auth-db:
+    container_name: moodly-auth-db
+    ports:
+      - "3310:3306"
+    environment:
+      MYSQL_DATABASE: moodly_auth # 각 DATABASE 이름은 다르기 때문에 따로 분리
+    extends:
+      file: common-config.yml
+      service: microservice-db-config
+
+  moodly-auth:
+    image: "tsyundeveloper/moodly-auth:latest"
+    container_name: moodly-auth
+    ports:
+      - "8081:8081"
+    environment:
+      SPRING_APPLICATION_NAME: "auth-service"
+      SPRING_DATASOURCE_URL: ${DB_URL}
+      SPRING_DATASOURCE_USERNAME: ${DB_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
+      SPRING_JPA_HIBERNATE_DDL_AUTO: "update"
+    depends_on:
+      moodly-auth-db:
+        condition: service_healthy
+    restart: unless-stopped
+    extends:
+      file: common-config.yml
+      service: network-deploy-service
+
+networks:
+  moodly:
+    driver: "bridge"
