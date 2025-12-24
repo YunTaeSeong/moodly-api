@@ -3,24 +3,21 @@ services:
     networks:
       - moodly
 
-  # mysql 컨테이너를 어떻게 띄울지에 대한 설정
   microservice-db-config:
     extends:
       service: network-deploy-service
-    image: mysql:8.0 # 컨테이너 시작 시 MySQL 서버가 실행
+    image: mysql:8.0
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
     command: >
       --character-set-server=utf8mb4
       --collation-server=utf8mb4_unicode_ci
       --default-time-zone=+09:00
+    volumes:
+      - moodly_moodly-auth-db:/var/lib/mysql
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-proot"]
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot -p$$MYSQL_ROOT_PASSWORD"]
       interval: 5s
       timeout: 3s
       retries: 20
       start_period: 10s
-
-networks:
-  moodly:
-    driver: bridge
