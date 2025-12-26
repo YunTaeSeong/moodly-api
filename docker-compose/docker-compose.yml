@@ -5,6 +5,8 @@ services:
       - "3310:3306"
     environment:
       MYSQL_DATABASE: moodly_auth
+    volumes:
+      - moodly_moodly-auth-db:/var/lib/mysql
     extends:
       file: common-config.yml
       service: microservice-db-config
@@ -31,9 +33,42 @@ services:
       file: common-config.yml
       service: network-deploy-service
 
+  moodly-user-db:
+    container_name: moodly-user-db
+    ports:
+      - "3311:3306"
+    environment:
+      MYSQL_DATABASE: moodly_user
+    volumes:
+      - moodly_moodly-user-db:/var/lib/mysql
+    extends:
+      file: common-config.yml
+      service: microservice-db-config
+
+  moodly-user:
+    profiles: ["app"]
+    build:
+      context: ..
+      dockerfile: user-service/Dockerfile
+    image: tsyundeveloper/moodly-user:latest
+    container_name: moodly-user
+    environment:
+      SPRING_APPLICATION_NAME: user-service
+      SPRING_PROFILES_ACTIVE: docker
+      DB_URL: jdbc:mysql://moodly-user-db:3306/moodly_user?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Seoul&characterEncoding=utf8
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+    depends_on:
+      moodly-user-db:
+        condition: service_healthy
+    extends:
+      file: common-config.yml
+      service: network-deploy-service
+
 networks:
   moodly:
     driver: bridge
 
 volumes:
   moodly_moodly-auth-db: {}
+  moodly_moodly-user-db: {}
