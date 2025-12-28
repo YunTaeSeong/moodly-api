@@ -4,6 +4,6 @@ spring:
       on-profile: docker
 
   datasource:
-    url: ${DB_URL}
+    url: jdbc:mysql://moodly-user-db:3306/moodly_user?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Seoul&characterEncoding=utf8
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}

@@ -17,6 +17,13 @@ subprojects {
 	apply plugin: 'java'
 	apply plugin: 'io.spring.dependency-management'
 
+	// Spring Boot BOM을 공통으로 적용 (이게 핵심)
+	dependencyManagement {
+		imports {
+			mavenBom "org.springframework.boot:spring-boot-dependencies:3.5.9"
+		}
+	}
+
 	java {
 		toolchain {
 			languageVersion = JavaLanguageVersion.of(21)
@@ -30,7 +37,6 @@ subprojects {
 	}
 
 	dependencies {
-		// 공통으로 거의 다 쓰는 것들
 		compileOnly 'org.projectlombok:lombok'
 		annotationProcessor 'org.projectlombok:lombok'
 
@@ -41,4 +47,3 @@ subprojects {
 		useJUnitPlatform()
 	}
 }
-
