@@ -8,7 +8,7 @@ pluginManagement {
 
 rootProject.name = 'moodly-api'
 
-include 'common'
+include 'common-core'
 include 'auth-service'
 include 'user-service'
 include 'order-service'
