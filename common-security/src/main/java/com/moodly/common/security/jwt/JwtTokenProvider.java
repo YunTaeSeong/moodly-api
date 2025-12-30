@@ -27,8 +27,8 @@ public class JwtTokenProvider {
 
     private final SecretKey key;
 
-    public static JwtTokenProvider from(JwtProperties props) {
-        return new JwtTokenProvider(props, buildKey(props.getSecret()));
+    public static JwtTokenProvider from(JwtProperties properties) {
+        return new JwtTokenProvider(properties, buildKey(properties.getSecret()));
     }
 
     private static SecretKey buildKey(String secret) {

@@ -54,11 +54,16 @@ services:
       dockerfile: user-service/Dockerfile
     image: tsyundeveloper/moodly-user:latest
     container_name: moodly-user
+    ports:
+      - "8082:8082"
     environment:
       SPRING_APPLICATION_NAME: user-service
       SPRING_PROFILES_ACTIVE: docker
       DB_USERNAME: ${DB_USERNAME}
       DB_PASSWORD: ${DB_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_ACCESS_TOKEN: ${JWT_ACCESS_TOKEN}
+      JWT_REFRESH_TOKEN: ${JWT_REFRESH_TOKEN}
     depends_on:
       moodly-user-db:
         condition: service_healthy
