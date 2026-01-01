@@ -9,4 +9,7 @@ dependencies {
 
     api 'jakarta.persistence:jakarta.persistence-api'
     api 'org.springframework.data:spring-data-jpa'
+
+    implementation 'org.springframework:spring-web'
+    implementation 'jakarta.servlet:jakarta.servlet-api'
 }

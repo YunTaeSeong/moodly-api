@@ -1,31 +1,42 @@
 package com.moodly.common.exception;
 
+import org.springframework.http.HttpStatus;
+
 public enum GlobalErrorCode implements ErrorCode {
-    USER_NOT_FOUND("USER_001", "USER_NOT_FOUND"),
 
-    INVALID_JWT_SECRET("JWT_001", "JWT_SECRET_NULL_OR_BLANK"),
-    INVALID_JWT_TOKEN("JWT_002", "INVALID_JWT_TOKEN"),
-    INVALID_REFRESH_TOKEN("JWT_003", "INVALID_REFRESH_TOKEN"),
-    EXPIRED_REFRESH_TOKEN("JWT_004", "EXPIRED_REFRESH_TOKEN"),
+    USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER_001", "USER_NOT_FOUND"),
+    DUPLICATED_EMAIL(HttpStatus.CONFLICT, "EMAIL_001", "DUPLICATED_EMAIL"),
 
-    INTERNAL_SERVER_ERROR("501", "INTERNAL_SERVER_ERROR");
+    PASSWORD_MISMATCH(HttpStatus.BAD_REQUEST, "PASSWORD_001", "PASSWORD_MISMATCH"),
 
+    INVALID_JWT_SECRET(HttpStatus.INTERNAL_SERVER_ERROR, "JWT_001", "JWT_SECRET_NULL_OR_BLANK"),
+    INVALID_JWT_TOKEN(HttpStatus.UNAUTHORIZED, "JWT_002", "INVALID_JWT_TOKEN"),
+    INVALID_REFRESH_TOKEN(HttpStatus.UNAUTHORIZED, "JWT_003", "INVALID_REFRESH_TOKEN"),
+    EXPIRED_REFRESH_TOKEN(HttpStatus.UNAUTHORIZED, "JWT_004", "EXPIRED_REFRESH_TOKEN"),
 
+    INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "COMMON_001", "INTERNAL_SERVER_ERROR");
+
+    private final HttpStatus httpStatus;
     private final String code;
     private final String message;
 
-    GlobalErrorCode(String code, String message) {
+    GlobalErrorCode(HttpStatus httpStatus, String code, String message) {
+        this.httpStatus = httpStatus;
         this.code = code;
         this.message = message;
     }
 
     @Override
     public String code() {
-        return "";
+        return code;
     }
 
     @Override
     public String message() {
-        return "";
+        return message;
+    }
+
+    public HttpStatus httpStatus() {
+        return httpStatus;
     }
 }
