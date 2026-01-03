@@ -110,7 +110,7 @@ public class JwtTokenIssuer {
         }
     }
 
-    private static String sha256Hex(String raw) {
+    public String sha256Hex(String raw) {
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-256");
             byte[] digest = md.digest(raw.getBytes(StandardCharsets.UTF_8));
