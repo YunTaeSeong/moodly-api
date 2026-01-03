@@ -5,7 +5,9 @@ import org.springframework.http.HttpStatus;
 public enum GlobalErrorCode implements ErrorCode {
 
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER_001", "USER_NOT_FOUND"),
+
     DUPLICATED_EMAIL(HttpStatus.CONFLICT, "EMAIL_001", "DUPLICATED_EMAIL"),
+    EMAIL_NOT_FOUND(HttpStatus.BAD_REQUEST, "EMAIL_001", "EMAIL_NOT_FOUND"),
 
     PASSWORD_MISMATCH(HttpStatus.BAD_REQUEST, "PASSWORD_001", "PASSWORD_MISMATCH"),
 

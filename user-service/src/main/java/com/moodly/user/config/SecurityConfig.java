@@ -32,9 +32,14 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/user/register", "/user/login").permitAll()
-                        .requestMatchers("/user/**").authenticated()
-                        .anyRequest().permitAll()
+                        // 내부 호출 전용 (Feign)
+                        .requestMatchers("/internal/**").permitAll()
+
+                        // 공개 API (우선 회원가입만)
+                        .requestMatchers("/user/register").permitAll()
+
+                        // 나머지 user API는 로그인 후 접근
+                        .anyRequest().authenticated()
                 )
                 .addFilterBefore(
                         new JwtAuthenticationFilter(jwtTokenProvider),
