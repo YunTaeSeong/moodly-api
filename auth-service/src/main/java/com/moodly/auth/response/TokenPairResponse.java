@@ -1,4 +1,4 @@
-package com.moodly.auth.dto;
+package com.moodly.auth.response;
 
 public record TokenPairResponse(
         String accessToken,

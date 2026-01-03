@@ -1,7 +1,8 @@
 package com.moodly.auth.token;
 
+import com.moodly.auth.client.user.UserServiceClient;
 import com.moodly.auth.domain.RefreshToken;
-import com.moodly.auth.dto.TokenPairResponse;
+import com.moodly.auth.response.TokenPairResponse;
 import com.moodly.auth.repository.RefreshTokenRepository;
 import com.moodly.common.exception.BaseException;
 import com.moodly.common.exception.GlobalErrorCode;
@@ -30,6 +31,7 @@ public class JwtTokenIssuer {
 
     private final AuthJwtProperties properties;
     private final RefreshTokenRepository refreshTokenRepository;
+    private final UserServiceClient userServiceClient;
 
     public TokenPairResponse issue(Long userId, List<String> roles) {
         String access = createAccessToken(userId, roles);
@@ -57,8 +59,7 @@ public class JwtTokenIssuer {
         // rotation: 해당 유저 refresh 전부 삭제 후 새로 발급
         refreshTokenRepository.deleteByUserId(stored.getUserId());
 
-        List<String> roles = List.of("USER"); // claim에는 USER (JwtTokenProvider가 ROLE_ 붙여줌)
-
+        List<String> roles = userServiceClient.getRoles(stored.getUserId());
         String newAccess = createAccessToken(stored.getUserId(), roles);
         String newRefresh = createAndStoreRefreshToken(stored.getUserId());
 

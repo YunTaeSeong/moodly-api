@@ -1,4 +1,4 @@
-package com.moodly.auth.dto;
+package com.moodly.auth.request;
 
 public record RefreshRequest(
         String refreshToken
