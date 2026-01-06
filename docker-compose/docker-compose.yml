@@ -1,4 +1,13 @@
 services:
+  moodly-redis:
+    image: redis:7
+    container_name: moodly-redis
+    ports:
+      - "6379:6379"
+    extends:
+      file: common-config.yml
+      service: network-deploy-service
+
   moodly-auth-db:
     container_name: moodly-auth-db
     ports:
@@ -64,9 +73,13 @@ services:
       JWT_SECRET: ${JWT_SECRET}
       JWT_ACCESS_TOKEN: ${JWT_ACCESS_TOKEN}
       JWT_REFRESH_TOKEN: ${JWT_REFRESH_TOKEN}
+      NAVER_MAIL_USERNAME: ${NAVER_MAIL_USERNAME}
+      NAVER_MAIL_PASSWORD: ${NAVER_MAIL_PASSWORD}
     depends_on:
       moodly-user-db:
         condition: service_healthy
+      moodly-redis:
+        condition: service_started
     extends:
       file: common-config.yml
       service: network-deploy-service

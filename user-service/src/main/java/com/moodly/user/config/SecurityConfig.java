@@ -36,7 +36,7 @@ public class SecurityConfig {
                         .requestMatchers("/internal/**").permitAll()
 
                         // 공개 API (우선 회원가입만)
-                        .requestMatchers("/user/register").permitAll()
+                        .requestMatchers("/user/register", "/user/find-id/request", "/user/find-id/confirm").permitAll()
 
                         // 나머지 user API는 로그인 후 접근
                         .anyRequest().authenticated()
