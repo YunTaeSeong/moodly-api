@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import org.springframework.data.jpa.repository.Modifying;
 
 @Entity
 @Table(name = "users")
@@ -51,4 +52,8 @@ public class Users extends BaseEntity {
                 .build();
     }
 
+    @Modifying
+    public void changePassword(String newPassword) {
+        this.password = newPassword;
+    }
 }
