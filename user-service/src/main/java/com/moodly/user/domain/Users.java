@@ -53,7 +53,7 @@ public class Users extends BaseEntity {
     }
 
     @Modifying
-    public void changePassword(String newPassword) {
-        this.password = newPassword;
+    public void changePassword(String encodedPassword) {
+        this.password = encodedPassword;
     }
 }

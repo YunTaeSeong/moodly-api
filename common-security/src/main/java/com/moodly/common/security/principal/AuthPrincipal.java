@@ -10,7 +10,7 @@ import java.util.List;
 public class AuthPrincipal {
 
     // JWT sub
-    private final String userId;
+    private final Long userId;
 
     private final String email;
 

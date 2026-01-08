@@ -21,3 +21,8 @@ security:
     issuer: moodly-auth
     audience: moodly-api
     roles-claim: roles
+
+logging:
+  level:
+    org.springframework.security: DEBUG
+

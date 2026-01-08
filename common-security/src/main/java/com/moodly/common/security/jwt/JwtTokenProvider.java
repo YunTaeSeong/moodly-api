@@ -8,10 +8,12 @@ import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
@@ -20,23 +22,22 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+@Component
 @RequiredArgsConstructor
 public class JwtTokenProvider {
 
     private final JwtProperties properties;
+    private SecretKey key;
 
-    private final SecretKey key;
-
-    public static JwtTokenProvider from(JwtProperties properties) {
-        return new JwtTokenProvider(properties, buildKey(properties.getSecret()));
+    @PostConstruct
+    private void init() {
+        this.key = buildKey(properties.getSecret());
     }
 
     private static SecretKey buildKey(String secret) {
         if (secret == null || secret.isBlank()) {
             throw new BaseException(GlobalErrorCode.INVALID_JWT_SECRET);
         }
-
-        // Base64 디코딩, 실패 시 문자열 사용
         try {
             byte[] decode = Decoders.BASE64.decode(secret);
             return Keys.hmacShaKeyFor(decode);
@@ -75,17 +76,23 @@ public class JwtTokenProvider {
      * 인증 사용자
      */
     public AuthPrincipal toPrincipal(Claims claims) {
-        String userId = claims.getSubject();
-        if(userId == null || userId.isBlank()) {
+        String subject = claims.getSubject();
+        if (subject == null || subject.isBlank()) {
             throw new BaseException(GlobalErrorCode.USER_NOT_FOUND);
         }
 
-        String email = claims.get("email", String.class);
+        Long userId;
+        try {
+            userId = Long.valueOf(subject);
+        } catch (NumberFormatException e) {
+            throw new BaseException(GlobalErrorCode.INVALID_JWT_TOKEN);
+        }
 
+        String email = claims.get("email", String.class);
         List<String> roles = extractRoles(claims, properties.getRoleClaim());
 
         return AuthPrincipal.builder()
-                .userId(userId)
+                .userId(userId)   // ✅ Long
                 .email(email)
                 .roles(roles)
                 .build();

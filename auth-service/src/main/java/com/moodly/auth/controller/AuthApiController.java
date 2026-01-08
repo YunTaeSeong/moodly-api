@@ -7,6 +7,7 @@ import com.moodly.auth.repository.RefreshTokenRepository;
 import com.moodly.auth.request.LoginRequest;
 import com.moodly.auth.request.RefreshRequest;
 import com.moodly.auth.response.TokenPairResponse;
+import com.moodly.auth.service.AuthService;
 import com.moodly.auth.token.JwtTokenIssuer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +21,7 @@ public class AuthApiController {
     private final JwtTokenIssuer tokenIssuer;
     private final RefreshTokenRepository refreshTokenRepository;
     private final JwtTokenIssuer jwtTokenIssuer;
+    private final AuthService authService;
 
     private static final String REFRESH_HEADER_NAME = "X-Refresh-Token";
 
@@ -45,9 +47,17 @@ public class AuthApiController {
         return ResponseEntity.noContent().build(); // 204로 통일
     }
 
-
     @PostMapping("/refresh")
     public TokenPairResponse refresh(@RequestBody RefreshRequest req) {
         return tokenIssuer.refresh(req.refreshToken());
     }
+
+    @DeleteMapping("/refresh-token/{userId}")
+    public ResponseEntity<Void> revokeAllByUserId(
+            @PathVariable Long userId
+    ) {
+        authService.revokeAllByUserId(userId);
+        return ResponseEntity.noContent().build();
+    }
+
 }

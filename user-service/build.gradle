@@ -2,12 +2,23 @@ plugins {
     id 'org.springframework.boot'
 }
 
+ext {
+    set('springCloudVersion', "2025.0.0")
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+    }
+}
+
 dependencies {
     implementation project(':common-core')
     implementation project(":common-security")
 
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-security'
+    testImplementation "org.springframework.security:spring-security-test"
 
     // JWT (가장 많이 쓰는 jjwt)
     implementation 'io.jsonwebtoken:jjwt-api:0.12.5'
@@ -28,6 +39,9 @@ dependencies {
 
     // mail
     implementation 'org.springframework.boot:spring-boot-starter-mail'
+
+    // OpenFeign
+    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
 
     implementation 'org.springframework.boot:spring-boot-starter-validation'
 }
