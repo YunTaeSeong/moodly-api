@@ -27,6 +27,7 @@ spring:
     url: jdbc:mysql://moodly-user-db:3306/moodly_user?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Seoul&characterEncoding=utf8
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
 
 security:
   jwt:
@@ -35,4 +36,4 @@ security:
     refresh-token-ttl-seconds: ${JWT_REFRESH_TOKEN}
 
 auth-service:
-  base-url: http://moodly-auth:8081
+  base_url: http://moodly-auth:8081

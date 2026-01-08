@@ -75,7 +75,7 @@ services:
       JWT_REFRESH_TOKEN: ${JWT_REFRESH_TOKEN}
       NAVER_MAIL_USERNAME: ${NAVER_MAIL_USERNAME}
       NAVER_MAIL_PASSWORD: ${NAVER_MAIL_PASSWORD}
-      APP_FRONTEND_BASE-URL: http://localhost:3000
+      APP_FRONTEND_BASE_URL: http://localhost:3000
     depends_on:
       moodly-user-db:
         condition: service_healthy

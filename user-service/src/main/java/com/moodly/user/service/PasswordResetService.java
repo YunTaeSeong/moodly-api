@@ -32,7 +32,7 @@ public class PasswordResetService {
     private final EmailSender emailSender;
     private final PasswordEncoder encoder;
 
-    @Value("${app.frontend.base-url}")
+    @Value("${app.frontend.base_url}")
     private String frontBaseUrl;
 
     @Transactional

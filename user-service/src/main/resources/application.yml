@@ -24,4 +24,4 @@ app:
   mail:
     from: ${NAVER_MAIL_USERNAME}
   frontend:
-    base-url: http://localhost:3000
+    base_url: http://localhost:3000

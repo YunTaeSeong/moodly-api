@@ -36,4 +36,4 @@ security:
     refresh-token-ttl-seconds: ${JWT_REFRESH_TOKEN}
 
 auth-service:
-  base-url: http://localhost:8081
+  base_url: http://localhost:8081
