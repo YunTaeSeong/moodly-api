@@ -85,6 +85,41 @@ services:
       file: common-config.yml
       service: network-deploy-service
 
+  moodly-product-db:
+    container_name: moodly-product-db
+    ports:
+      - "3312:3306"
+    environment:
+      MYSQL_DATABASE: moodly_product
+    volumes:
+      - moodly_moodly-product-db:/var/lib/mysql
+    extends:
+      file: common-config.yml
+      service: microservice-db-config
+
+  moodly-product:
+    profiles: ["app"]
+    build:
+      context: ..
+      dockerfile: product-service/Dockerfile
+    image: tsyundeveloper/moodly-product:latest
+    container_name: moodly-product
+    ports:
+      - "8083:8083"
+    environment:
+      SPRING_APPLICATION_NAME: user-service
+      SPRING_PROFILES_ACTIVE: docker
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_ACCESS_TOKEN: ${JWT_ACCESS_TOKEN}
+      JWT_REFRESH_TOKEN: ${JWT_REFRESH_TOKEN}
+    depends_on:
+      moodly-product-db:
+        condition: service_healthy
+      moodly-redis:
+        condition: service_started
+
 networks:
   moodly:
     driver: bridge
@@ -92,3 +127,4 @@ networks:
 volumes:
   moodly_moodly-auth-db: {}
   moodly_moodly-user-db: {}
+  moodly_moodly-product-db: {}
