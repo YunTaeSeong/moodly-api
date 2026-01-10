@@ -2,16 +2,6 @@ plugins {
     id 'org.springframework.boot'
 }
 
-ext {
-    set('springCloudVersion', "2025.0.0")
-}
-
-dependencyManagement {
-    imports {
-        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
-    }
-}
-
 dependencies {
     implementation project(':common-core')
     implementation project(":common-security")
@@ -39,9 +29,6 @@ dependencies {
 
     // mail
     implementation 'org.springframework.boot:spring-boot-starter-mail'
-
-    // OpenFeign
-    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
 
     implementation 'org.springframework.boot:spring-boot-starter-validation'
 }

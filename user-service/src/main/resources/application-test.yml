@@ -21,12 +21,11 @@ spring:
 
 security:
   jwt:
-    secret: "bW9vZGx5LXRlc3Qtand0LXNlY3JldC0yMDI2" # 테스트용 secret
-    access-token-ttl-seconds: 900
-    refresh-token-ttl-seconds: 604800
-    issuer: moodly-auth
-    audience: moodly-api
-    roles-claim: roles
+    common:
+      secret: "bW9vZGx5LXRlc3Qtand0LXNlY3JldC0yMDI2" # 테스트용 secret
+      issuer: moodly-auth
+      audience: moodly-api
+      roles-claim: roles
 
 app:
   mail:

@@ -31,9 +31,8 @@ spring:
 
 security:
   jwt:
-    secret: ${JWT_SECRET}
-    access-token-ttl-seconds: ${JWT_ACCESS_TOKEN}
-    refresh-token-ttl-seconds: ${JWT_REFRESH_TOKEN}
+    common:
+      secret: ${JWT_SECRET}
 
 auth-service:
   base_url: http://moodly-auth:8081

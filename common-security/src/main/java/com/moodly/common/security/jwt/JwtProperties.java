@@ -6,7 +6,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @Getter
 @Setter
-@ConfigurationProperties(prefix = "security.jwt")
+@ConfigurationProperties(prefix = "security.jwt.common")
 public class JwtProperties {
 
     // HS256 secret
@@ -22,4 +22,8 @@ public class JwtProperties {
 
     // ex : 'USER', 'ADMIN'
     private String roleClaim = "roles";
+
+    private long accessTokenTtlSeconds;
+
+    private long refreshTokenTtlSeconds;
 }

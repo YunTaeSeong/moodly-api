@@ -5,6 +5,7 @@ import com.moodly.user.request.MyChangePasswordRequest;
 import com.moodly.user.service.MyPasswordChangeService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/user/mypage/security")
 @RequiredArgsConstructor
+@Slf4j
 public class MyPasswordChangeApiController {
 
     private final MyPasswordChangeService passwordChangeService;
@@ -23,6 +25,7 @@ public class MyPasswordChangeApiController {
             @AuthenticationPrincipal AuthPrincipal principal,
             @RequestHeader("Authorization") String authorization
     ) {
+        log.info("[HIT] controller Authorization={}", authorization);
         passwordChangeService.changePassword(
                 principal.getUserId(),
                 request.currentPassword(),

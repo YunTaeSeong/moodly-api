@@ -16,9 +16,10 @@ spring:
 
 security:
   jwt:
-    issuer: moodly-auth
-    audience: moodly-api
-    roles-claim: roles
+    common:
+      issuer: moodly-auth
+      audience: moodly-api
+      roles-claim: roles
 
 app:
   mail:
