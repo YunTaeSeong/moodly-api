@@ -1,0 +1,46 @@
+server:
+  port: 8072
+
+spring:
+  application:
+    name: gateway-service
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info, metrics, gateway
+  endpoint:
+    gateway:
+      access: unrestricted
+    health:
+      show-details: never
+  info:
+    env:
+      enabled: false
+
+info:
+  app:
+    name: gateway-service
+    version: 0.0.1
+
+security:
+  jwt:
+    common:
+      issuer: moodly-auth
+      audience: moodly-api
+      roles-claim: roles
+
+    gateway:
+      user-id-header: X-User-Id
+      bearer-prefix: "Bearer "
+      roles-header: X-Roles
+      permit-all:
+        - /AUTH/**
+        - /USER/user/register
+        - /USER/user/find-id/request
+        - /USER/user/find-id/confirm
+        - /USER/user/password/reset/request
+        - /USER/user/password/reset/confirm
+        - /actuator/**
+        - /internal/**

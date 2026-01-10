@@ -1,0 +1,74 @@
+spring:
+  config:
+    activate:
+      on-profile: test
+
+  cloud:
+    gateway:
+      server:
+        webflux:
+          routes:
+            - id: auth
+              uri: http://localhost:8081
+              predicates:
+                - Path=/AUTH/**
+              filters:
+                - RewritePath=/AUTH/(?<segment>.*), /${segment}
+
+            - id: user
+              uri: http://localhost:8082
+              predicates:
+                - Path=/USER/**
+              filters:
+                - RewritePath=/USER/(?<segment>.*), /${segment}
+
+            - id: user-internal
+              uri: http://localhost:8082
+              predicates:
+                - Path=/internal/**
+              filters:
+                - RewritePath=/internal/(?<segment>.*), /internal/${segment}
+
+            - id: product
+              uri: http://localhost:8083
+              predicates:
+                - Path=/PRODUCT/**
+              filters:
+                - RewritePath=/PRODUCT/(?<segment>.*), /${segment}
+
+          globalcors:
+            cors-configurations:
+              '[/**]':
+                allowed-origins:
+                  - "http://localhost:3000"
+                allowed-methods:
+                  - GET
+                  - POST
+                  - PUT
+                  - PATCH
+                  - DELETE
+                  - OPTIONS
+                allowed-headers: "*"
+                allow-credentials: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    gateway:
+      access: unrestricted
+    health:
+      show-details: always
+  info:
+    env:
+      enabled: true
+
+security:
+  jwt:
+    common:
+      secret: "bW9vZGx5LXRlc3Qtand0LXNlY3JldC0yMDI2=" # 테스트용 secret
+      issuer: moodly-auth
+      audience: moodly-api
+      roles-claim: roles
