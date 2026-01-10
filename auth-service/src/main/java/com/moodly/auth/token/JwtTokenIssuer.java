@@ -6,6 +6,8 @@ import com.moodly.auth.response.TokenPairResponse;
 import com.moodly.auth.repository.RefreshTokenRepository;
 import com.moodly.common.exception.BaseException;
 import com.moodly.common.exception.GlobalErrorCode;
+import com.moodly.common.security.jwt.JwtProperties;
+import com.moodly.common.security.jwt.JwtTokenProvider;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -29,7 +31,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class JwtTokenIssuer {
 
-    private final AuthJwtProperties properties;
+    private final JwtProperties jwtTokenProvider;
     private final RefreshTokenRepository refreshTokenRepository;
     private final UserServiceClient userServiceClient;
 
@@ -68,13 +70,13 @@ public class JwtTokenIssuer {
 
     private String createAccessToken(Long userId, List<String> roles) {
         Instant now = Instant.now();
-        Date exp = Date.from(now.plusSeconds(properties.getAccessTokenTtlSeconds()));
+        Date exp = Date.from(now.plusSeconds(jwtTokenProvider.getAccessTokenTtlSeconds()));
 
         return Jwts.builder()
                 .subject(String.valueOf(userId))
-                .issuer(properties.getIssuer())
-                .audience().add(properties.getAudience()).and()
-                .claim(properties.getRolesClaim(), roles)
+                .issuer(jwtTokenProvider.getIssuer())
+                .audience().add(jwtTokenProvider.getAudience()).and()
+                .claim(jwtTokenProvider.getRoleClaim(), roles)
                 .issuedAt(Date.from(now))
                 .expiration(exp)
                 .signWith(getKey())
@@ -83,7 +85,7 @@ public class JwtTokenIssuer {
 
     private String createAndStoreRefreshToken(Long userId) {
         Instant nowInstant = Instant.now();
-        Instant expInstant = nowInstant.plusSeconds(properties.getRefreshTokenTtlSeconds());
+        Instant expInstant = nowInstant.plusSeconds(jwtTokenProvider.getRefreshTokenTtlSeconds());
 
         String random = UUID.randomUUID() + "." + UUID.randomUUID();
         String hash = sha256Hex(random);
@@ -102,7 +104,7 @@ public class JwtTokenIssuer {
     }
 
     private SecretKey getKey() {
-        String secret = properties.getSecret();
+        String secret = jwtTokenProvider.getSecret();
         try {
             return Keys.hmacShaKeyFor(Decoders.BASE64.decode(secret));
         } catch (Exception e) {

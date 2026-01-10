@@ -7,6 +7,12 @@ spring:
     url: jdbc:mysql://moodly-auth-db:3306/moodly_auth?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Seoul&characterEncoding=utf8
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+security:
+  jwt:
+    common:
+      secret: ${JWT_SECRET}
 
 user-service:
   url: http://moodly-user:8082

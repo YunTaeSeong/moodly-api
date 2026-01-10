@@ -2,16 +2,6 @@ plugins {
     id 'org.springframework.boot'
 }
 
-ext {
-    set('springCloudVersion', "2025.0.0")
-}
-
-dependencyManagement {
-    imports {
-        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
-    }
-}
-
 dependencies {
     implementation project(':common-core')
     implementation project(":common-security")
@@ -28,8 +18,6 @@ dependencies {
     implementation 'io.jsonwebtoken:jjwt-api:0.12.5'
     runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.5'
     runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.5'
-
-    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
 
     // (선택) 유효성 검증
     implementation 'org.springframework.boot:spring-boot-starter-validation'
