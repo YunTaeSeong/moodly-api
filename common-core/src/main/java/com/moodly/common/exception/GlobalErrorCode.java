@@ -22,6 +22,8 @@ public enum GlobalErrorCode implements ErrorCode {
     VERIFICATION_CODE_INVALID(HttpStatus.BAD_REQUEST, "AUTH_002", "SERVER_ERROR_AUTH_INVALID"),
 
     MISSING_AUTHORIZATION(HttpStatus.UNAUTHORIZED, "AUTHORIZATION_001", "MISSING_AUTHORIZATION"),
+
+    PRODUCTID_NOT_FOUND(HttpStatus.NOT_FOUND, "PRODUCT_001", "INVALID_PRODUCT_ID"),
     ;
 
     private final HttpStatus httpStatus;

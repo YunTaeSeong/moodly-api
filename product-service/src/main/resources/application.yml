@@ -4,18 +4,30 @@ server:
 spring:
   application:
     name: product-service
+  sql:
+    init:
+      mode: always
   jpa:
     database-platform: org.hibernate.dialect.MySQLDialect
     hibernate:
       ddl-auto: update
+    defer-datasource-initialization: true
     open-in-view: false
     show-sql: true
     properties:
       hibernate:
         format_sql: true
 
+
+#security:
+#  jwt:
+#    issuer: moodly-auth
+#    audience: moodly-api
+#    roles-claim: roles
+
 security:
   jwt:
-    issuer: moodly-auth
-    audience: moodly-api
-    roles-claim: roles
+    common:
+      issuer: moodly-auth
+      audience: moodly-api
+      roles-claim: roles

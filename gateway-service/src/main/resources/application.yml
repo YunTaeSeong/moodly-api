@@ -44,3 +44,4 @@ security:
         - /USER/user/password/reset/confirm
         - /actuator/**
         - /internal/**
+        - /PRODUCT/product/**
