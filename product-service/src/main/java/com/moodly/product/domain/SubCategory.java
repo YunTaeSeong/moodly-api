@@ -3,6 +3,7 @@ package com.moodly.product.domain;
 import com.moodly.common.domain.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -26,5 +27,6 @@ public class SubCategory extends BaseEntity {
     private String name;
 
     @Column(name = "display_order")
+    @Builder.Default
     private Integer displayOrder = 0;
 }

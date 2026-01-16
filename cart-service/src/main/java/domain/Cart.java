@@ -38,12 +38,12 @@ public class Cart {
     @Column(nullable = false, name = "product_id")
     private Long productId;
 
-    @Builder.Default
     @Column(nullable = false)
+    @Builder.Default
     private Integer quantity = 1;
 
-    @Builder.Default
     @Column(nullable = false)
+    @Builder.Default
     private boolean checked = true;
 
 }

@@ -4,6 +4,7 @@ import com.moodly.common.domain.BaseEntity;
 import com.moodly.product.enums.ProductInquiriesStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -39,6 +40,7 @@ public class ProductInquiries extends BaseEntity {
     private String content;
 
     @Enumerated(EnumType.STRING)
+    @Builder.Default
     private ProductInquiriesStatus status = ProductInquiriesStatus.PENDING; // 답변대기 Default
 
     @Column(columnDefinition = "TEXT")

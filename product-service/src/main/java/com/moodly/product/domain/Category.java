@@ -3,6 +3,7 @@ package com.moodly.product.domain;
 import com.moodly.common.domain.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -22,6 +23,7 @@ public class Category extends BaseEntity {
     @Column(nullable = false, length = 50)
     private String name;
 
+    @Builder.Default
     @Column(name = "display_order")
     private Integer displayOrder = 0;
 }

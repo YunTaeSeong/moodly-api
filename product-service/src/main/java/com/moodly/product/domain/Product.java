@@ -34,6 +34,7 @@ public class Product extends BaseEntity {
     @Column(nullable = false, precision = 12, scale = 2)
     private BigDecimal price;
 
+    @Builder.Default
     private Integer discount = 0;
 
     @Column(length = 500)
