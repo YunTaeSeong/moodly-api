@@ -35,8 +35,9 @@ public class SecurityConfig {
                         // 내부 호출 전용 (Feign)
                         .requestMatchers("/internal/**").permitAll()
 
-                        // 공개 API (상품 목록 조회)
+                        // 공개 API (상품 목록 조회, 카테고리 조회)
                         .requestMatchers(HttpMethod.GET, "/product/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/category/**").permitAll()
 
                         // 나머지 API는 로그인 후 접근
                         .anyRequest().authenticated()

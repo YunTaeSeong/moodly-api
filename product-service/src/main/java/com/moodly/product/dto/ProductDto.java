@@ -30,13 +30,17 @@ public class ProductDto {
 
     private Long categoryId;
 
+    private String categoryName;
+
     private Long subCategoryId;
+
+    private String subCategoryName;
 
     private BigDecimal rating;
 
     private Integer reviewCount;
 
-    public static ProductDto fromEntity(Product product) {
+    public static ProductDto fromEntity(Product product, String categoryName, String subCategoryName) {
         return ProductDto.builder()
                 .id(product.getId())
                 .name(product.getName())
@@ -46,7 +50,9 @@ public class ProductDto {
                 .description(product.getDescription())
                 .details(product.getDetails())
                 .categoryId(product.getCategoryId())
+                .categoryName(categoryName)
                 .subCategoryId(product.getSubCategoryId())
+                .subCategoryName(subCategoryName)
                 .rating(product.getRating())
                 .build();
     }

@@ -30,7 +30,11 @@ public class ProductResponse {
 
     private Long categoryId;
 
+    private String categoryName;
+
     private Long subCategoryId;
+
+    private String subCategoryName;
 
     private BigDecimal rating;
 
@@ -46,7 +50,9 @@ public class ProductResponse {
                 .description(dto.getDescription())
                 .details(dto.getDetails())
                 .categoryId(dto.getCategoryId())
+                .categoryName(dto.getCategoryName())
                 .subCategoryId(dto.getSubCategoryId())
+                .subCategoryName(dto.getSubCategoryName())
                 .rating(dto.getRating())
                 .reviewCount(dto.getReviewCount())
                 .build();

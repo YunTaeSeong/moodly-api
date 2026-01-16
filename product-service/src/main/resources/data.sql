@@ -1,65 +1,306 @@
--- 상품 초기 데이터
--- 인기 상품 (category_id NULL)
-INSERT INTO products (name, price, discount, image, description, details, category_id, sub_category_id, rating, review_count, created_by) VALUES
-('스마트폰 케이스', 15000.00, 0, 'https://images.unsplash.com/photo-1601972602237-8c79241e468b?w=300&h=300&fit=crop', '고급스러운 스마트폰 케이스', NULL, NULL, NULL, 0.00, 0, 'system'),
-('무선 이어폰', 89000.00, 0, 'https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=300&h=300&fit=crop', '프리미엄 무선 이어폰', NULL, NULL, NULL, 0.00, 0, 'system'),
-('노트북 스탠드', 45000.00, 0, 'https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=300&h=300&fit=crop', '인체공학적 노트북 스탠드', NULL, NULL, NULL, 0.00, 0, 'system'),
-('블루투스 스피커', 120000.00, 0, 'https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=300&h=300&fit=crop', '고음질 블루투스 스피커', NULL, NULL, NULL, 0.00, 0, 'system'),
-('스마트 워치', 250000.00, 0, 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=300&h=300&fit=crop', '최신 스마트 워치', NULL, NULL, NULL, 0.00, 0, 'system'),
-('무선 마우스', 35000.00, 0, 'https://images.unsplash.com/photo-1527814050087-3793815479db?w=300&h=300&fit=crop', '에르고노믹 무선 마우스', NULL, NULL, NULL, 0.00, 0, 'system'),
-('USB-C 케이블', 12000.00, 0, 'https://images.unsplash.com/photo-1587825140708-dfaf72ae4b04?w=300&h=300&fit=crop', '고속 충전 USB-C 케이블', NULL, NULL, NULL, 0.00, 0, 'system'),
-('태블릿 거치대', 28000.00, 0, 'https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=300&h=300&fit=crop', '조절 가능한 태블릿 거치대', NULL, NULL, NULL, 0.00, 0, 'system'),
-('무선 키보드', 75000.00, 0, 'https://images.unsplash.com/photo-1587829741301-dc918b0c716f?w=300&h=300&fit=crop', '프리미엄 무선 키보드', NULL, NULL, NULL, 0.00, 0, 'system'),
-('게이밍 마우스패드', 25000.00, 0, 'https://images.unsplash.com/photo-1612198188060-c7c2a3b66eae?w=300&h=300&fit=crop', '대형 게이밍 마우스패드', NULL, NULL, NULL, 0.00, 0, 'system'),
-('웹캠 HD', 95000.00, 0, 'https://images.unsplash.com/photo-1587825143138-044a3fa50491?w=300&h=300&fit=crop', '고화질 웹캠', NULL, NULL, NULL, 0.00, 0, 'system'),
-('스탠딩 데스크', 180000.00, 0, 'https://images.unsplash.com/photo-1524758631624-e2822e304c36?w=300&h=300&fit=crop', '전동 스탠딩 데스크', NULL, NULL, NULL, 0.00, 0, 'system'),
-('USB 허브', 35000.00, 0, 'https://images.unsplash.com/photo-1625842268584-8f3296236761?w=300&h=300&fit=crop', '다중 포트 USB 허브', NULL, NULL, NULL, 0.00, 0, 'system'),
-('모니터 스탠드', 55000.00, 0, 'https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=300&h=300&fit=crop', '조절 가능한 모니터 스탠드', NULL, NULL, NULL, 0.00, 0, 'system'),
-('블루투스 어댑터', 18000.00, 0, 'https://images.unsplash.com/photo-1587825140708-dfaf72ae4b04?w=300&h=300&fit=crop', 'USB 블루투스 어댑터', NULL, NULL, NULL, 0.00, 0, 'system'),
-('노이즈 캔슬링 이어폰', 150000.00, 0, 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=300&h=300&fit=crop', '프리미엄 노이즈 캔슬링 이어폰', NULL, NULL, NULL, 0.00, 0, 'system');
+-- 카테고리 초기 데이터
+INSERT IGNORE INTO categories (id, name, display_order, created_by) VALUES
+(1, '의류', 1, 'system'),
+(2, '가전용품', 2, 'system'),
+(3, '푸드', 3, 'system'),
+(4, '뷰티', 4, 'system'),
+(5, '홈인테리어', 5, 'system');
 
+-- 서브카테고리 초기 데이터
 -- 의류 (category_id = 1)
-INSERT INTO products (name, price, discount, image, description, details, category_id, sub_category_id, rating, review_count, created_by) VALUES
-('데님 재킷', 89000.00, 0, 'https://images.unsplash.com/photo-1551028719-00167b16eac5?w=300&h=300&fit=crop', '클래식한 데님 재킷', NULL, 1, NULL, 0.00, 0, 'system'),
-('후드티', 45000.00, 0, 'https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=300&h=300&fit=crop', '편안한 후드티', NULL, 1, NULL, 0.00, 0, 'system'),
-('슬랙스', 65000.00, 0, 'https://images.unsplash.com/photo-1473966968600-fa801b869a1a?w=300&h=300&fit=crop', '정장용 슬랙스', NULL, 1, NULL, 0.00, 0, 'system'),
-('니트 스웨터', 75000.00, 0, 'https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=300&h=300&fit=crop', '따뜻한 니트 스웨터', NULL, 1, NULL, 0.00, 0, 'system'),
-('트레이닝복 세트', 120000.00, 0, 'https://images.unsplash.com/photo-1552902865-b72c031ac5ea?w=300&h=300&fit=crop', '편안한 트레이닝복', NULL, 1, NULL, 0.00, 0, 'system'),
-('코트', 180000.00, 0, 'https://images.unsplash.com/photo-1539533018447-63fcce2678e3?w=300&h=300&fit=crop', '우아한 롱 코트', NULL, 1, NULL, 0.00, 0, 'system');
+INSERT IGNORE INTO sub_categories (id, category_id, name, display_order, created_by) VALUES
+(1, 1, '남성의류', 1, 'system'),
+(2, 1, '여성의류', 2, 'system'),
+(3, 1, '아동의류', 3, 'system'),
+(4, 1, '언더웨어', 4, 'system'),
+(5, 1, '액세서리', 5, 'system'),
+(6, 1, '신발', 6, 'system'),
+(7, 1, '가방', 7, 'system'),
+(8, 1, '시계', 8, 'system');
 
 -- 가전용품 (category_id = 2)
-INSERT INTO products (name, price, discount, image, description, details, category_id, sub_category_id, rating, review_count, created_by) VALUES
-('스마트 TV', 1200000.00, 0, 'https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=300&h=300&fit=crop', '4K UHD 스마트 TV', NULL, 2, NULL, 0.00, 0, 'system'),
-('무선 청소기', 350000.00, 0, 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=300&h=300&fit=crop', '강력한 무선 청소기', NULL, 2, NULL, 0.00, 0, 'system'),
-('에어프라이어', 180000.00, 0, 'https://images.unsplash.com/photo-1556910096-6f5e5ad8bcf4?w=300&h=300&fit=crop', '대용량 에어프라이어', NULL, 2, NULL, 0.00, 0, 'system'),
-('로봇 청소기', 450000.00, 0, 'https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=300&h=300&fit=crop', '스마트 로봇 청소기', NULL, 2, NULL, 0.00, 0, 'system'),
-('공기청정기', 320000.00, 0, 'https://images.unsplash.com/photo-1585771724684-38269d6639fd?w=300&h=300&fit=crop', 'HEPA 필터 공기청정기', NULL, 2, NULL, 0.00, 0, 'system'),
-('전자레인지', 150000.00, 0, 'https://images.unsplash.com/photo-1574269909862-7e1d70bb8078?w=300&h=300&fit=crop', '인버터 전자레인지', NULL, 2, NULL, 0.00, 0, 'system');
+INSERT IGNORE INTO sub_categories (id, category_id, name, display_order, created_by) VALUES
+(9, 2, 'TV/영상가전', 1, 'system'),
+(10, 2, '냉장고', 2, 'system'),
+(11, 2, '세탁기/건조기', 3, 'system'),
+(12, 2, '청소기', 4, 'system'),
+(13, 2, '공기청정기', 5, 'system'),
+(14, 2, '에어컨', 6, 'system'),
+(15, 2, '주방가전', 7, 'system'),
+(16, 2, '생활가전', 8, 'system');
 
 -- 푸드 (category_id = 3)
-INSERT INTO products (name, price, discount, image, description, details, category_id, sub_category_id, rating, review_count, created_by) VALUES
-('유기농 채소 세트', 25000.00, 0, 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=300&h=300&fit=crop', '신선한 유기농 채소', NULL, 3, NULL, 0.00, 0, 'system'),
-('프리미엄 한우', 85000.00, 0, 'https://images.unsplash.com/photo-1603048297172-c92544798d5a?w=300&h=300&fit=crop', '1등급 한우 세트', NULL, 3, NULL, 0.00, 0, 'system'),
-('수입 치즈 세트', 45000.00, 0, 'https://images.unsplash.com/photo-1618164436249-4473940d1f5c?w=300&h=300&fit=crop', '프리미엄 수입 치즈', NULL, 3, NULL, 0.00, 0, 'system'),
-('신선 과일 박스', 35000.00, 0, 'https://images.unsplash.com/photo-1619566636858-adf3ef46400b?w=300&h=300&fit=crop', '계절 과일 세트', NULL, 3, NULL, 0.00, 0, 'system'),
-('건강 간식 세트', 28000.00, 0, 'https://images.unsplash.com/photo-1551024506-0bccd828d307?w=300&h=300&fit=crop', '다양한 건강 간식', NULL, 3, NULL, 0.00, 0, 'system'),
-('유기농 꿀', 32000.00, 0, 'https://images.unsplash.com/photo-1587049352846-4a222e784d38?w=300&h=300&fit=crop', '천연 유기농 꿀', NULL, 3, NULL, 0.00, 0, 'system');
+INSERT IGNORE INTO sub_categories (id, category_id, name, display_order, created_by) VALUES
+(17, 3, '신선식품', 1, 'system'),
+(18, 3, '냉동식품', 2, 'system'),
+(19, 3, '간편식', 3, 'system'),
+(20, 3, '과자/스낵', 4, 'system'),
+(21, 3, '음료', 5, 'system'),
+(22, 3, '커피/차', 6, 'system'),
+(23, 3, '건강식품', 7, 'system'),
+(24, 3, '다이어트식품', 8, 'system');
 
 -- 뷰티 (category_id = 4)
-INSERT INTO products (name, price, discount, image, description, details, category_id, sub_category_id, rating, review_count, created_by) VALUES
-('스킨케어 세트', 120000.00, 0, 'https://images.unsplash.com/photo-1556228578-0d85b1a4d571?w=300&h=300&fit=crop', '프리미엄 스킨케어', NULL, 4, NULL, 0.00, 0, 'system'),
-('립스틱 세트', 65000.00, 0, 'https://images.unsplash.com/photo-1583241805004-e54e0752c8e5?w=300&h=300&fit=crop', '다양한 컬러 립스틱', NULL, 4, NULL, 0.00, 0, 'system'),
-('향수', 150000.00, 0, 'https://images.unsplash.com/photo-1541643600914-78b084683601?w=300&h=300&fit=crop', '프리미엄 향수', NULL, 4, NULL, 0.00, 0, 'system'),
-('마스크팩 세트', 35000.00, 0, 'https://images.unsplash.com/photo-1556229010-6c3f2c9ca5f8?w=300&h=300&fit=crop', '수분 마스크팩 10매', NULL, 4, NULL, 0.00, 0, 'system'),
-('선크림', 28000.00, 0, 'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=300&h=300&fit=crop', '자외선 차단 선크림', NULL, 4, NULL, 0.00, 0, 'system'),
-('에센스', 95000.00, 0, 'https://images.unsplash.com/photo-1616394584738-fc6e612e71b9?w=300&h=300&fit=crop', '안티에이징 에센스', NULL, 4, NULL, 0.00, 0, 'system');
+INSERT IGNORE INTO sub_categories (id, category_id, name, display_order, created_by) VALUES
+(25, 4, '스킨케어', 1, 'system'),
+(26, 4, '메이크업', 2, 'system'),
+(27, 4, '향수', 3, 'system'),
+(28, 4, '헤어케어', 4, 'system'),
+(29, 4, '바디케어', 5, 'system'),
+(30, 4, '남성화장품', 6, 'system'),
+(31, 4, '네일', 7, 'system'),
+(32, 4, '선케어', 8, 'system');
 
 -- 홈인테리어 (category_id = 5)
-INSERT INTO products (name, price, discount, image, description, details, category_id, sub_category_id, rating, review_count, created_by) VALUES
-('디퓨저 세트', 45000.00, 0, 'https://images.unsplash.com/photo-1606800054160-8e3c14e1a0b0?w=300&h=300&fit=crop', '아로마 디퓨저', NULL, 5, NULL, 0.00, 0, 'system'),
-('쿠션 세트', 65000.00, 0, 'https://images.unsplash.com/photo-1584100936595-c0655cf3c8f0?w=300&h=300&fit=crop', '편안한 소파 쿠션', NULL, 5, NULL, 0.00, 0, 'system'),
-('조명 램프', 85000.00, 0, 'https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=300&h=300&fit=crop', '인테리어 조명', NULL, 5, NULL, 0.00, 0, 'system'),
-('식물 화분 세트', 55000.00, 0, 'https://images.unsplash.com/photo-1485955900006-10f4d324d411?w=300&h=300&fit=crop', '공기정화 식물', NULL, 5, NULL, 0.00, 0, 'system'),
-('커튼', 120000.00, 0, 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=300&h=300&fit=crop', '블랙아웃 커튼', NULL, 5, NULL, 0.00, 0, 'system'),
-('러그', 180000.00, 0, 'https://images.unsplash.com/photo-1556911220-bff31c812dba?w=300&h=300&fit=crop', '프리미엄 러그', NULL, 5, NULL, 0.00, 0, 'system');
+INSERT IGNORE INTO sub_categories (id, category_id, name, display_order, created_by) VALUES
+(33, 5, '가구', 1, 'system'),
+(34, 5, '침구/커튼', 2, 'system'),
+(35, 5, '조명', 3, 'system'),
+(36, 5, '수납/정리', 4, 'system'),
+(37, 5, '인테리어소품', 5, 'system'),
+(38, 5, '주방용품', 6, 'system'),
+(39, 5, '욕실용품', 7, 'system'),
+(40, 5, '생활용품', 8, 'system');
 
+-- 상품 초기 데이터
+-- 인기 상품 (category_id NULL, sub_category_id NULL)
+INSERT IGNORE INTO products (name, price, discount, image, description, details, category_id, sub_category_id, rating, review_count, created_by) VALUES
+('스마트폰 케이스', 15000.00, 25, 'https://images.unsplash.com/photo-1601972602237-8c79241e468b?w=500&h=500&fit=crop', 
+'고급스러운 스마트폰 케이스로 기기를 완벽하게 보호하세요. 얇고 가벼우면서도 강력한 보호 기능을 제공합니다.', 
+'• 방수 기능으로 일상 생활에서 안전하게 사용 가능\n• 충격 흡수 소재로 낙하 시 기기 보호\n• 다양한 색상 제공으로 개성 표현\n• 1년 품질 보증으로 안심하고 사용\n• 얇은 디자인으로 휴대성 우수', 
+NULL, NULL, 4.50, 288, 'system'),
+
+('무선 이어폰', 89000.00, 34, 'https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=500&h=500&fit=crop', 
+'프리미엄 무선 이어폰으로 최고의 음질을 경험하세요. 노이즈 캔슬링 기능이 탑재되어 있어 어디서나 몰입감 있는 음악 감상을 즐길 수 있습니다.', 
+'• 액티브 노이즈 캔슬링으로 주변 소음 차단\n• 30시간 연속 재생 가능한 긴 배터리 수명\n• IPX7 방수 등급으로 운동 시에도 안전\n• 터치 제어로 편리한 조작\n• 프리미엄 사운드 드라이버로 고음질 구현', 
+NULL, NULL, 4.70, 512, 'system'),
+
+('노트북 스탠드', 45000.00, 0, 'https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=500&h=500&fit=crop', 
+'인체공학적 노트북 스탠드로 편안한 작업 환경을 만들어보세요. 높이와 각도를 자유롭게 조절할 수 있어 목과 어깨의 피로를 줄여줍니다.', 
+'• 높이 조절 가능으로 사용자 맞춤형 설정\n• 알루미늄 소재로 가볍고 내구성 우수\n• 통풍 설계로 노트북 발열 방지\n• 휴대용으로 어디서나 사용 가능\n• 다양한 노트북 크기 지원 (13~17인치)', 
+NULL, NULL, 4.60, 342, 'system'),
+
+('블루투스 스피커', 120000.00, 28, 'https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=500&h=500&fit=crop', 
+'고음질 블루투스 스피커로 어디서나 음악을 즐기세요. 강력한 베이스와 선명한 고음으로 콘서트장 같은 몰입감을 선사합니다.', 
+'• 360도 사운드로 어디서나 균일한 음질\n• 20시간 연속 재생 가능한 배터리\n• IPX5 방수 기능으로 야외 사용 가능\n• 다중 연결 지원으로 여러 기기 연결\n• 프리미엄 드라이버로 깊이 있는 사운드', 
+NULL, NULL, 4.80, 678, 'system'),
+
+('스마트 워치', 250000.00, 29, 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500&h=500&fit=crop', 
+'최신 스마트 워치로 건강과 일상을 관리하세요. 운동 추적부터 알림까지 모든 것을 한 손목에서 처리할 수 있습니다.', 
+'• 심박수 측정으로 건강 모니터링\n• GPS 내장으로 운동 경로 추적\n• 7일 배터리 수명으로 장시간 사용\n• 스마트 알림으로 중요한 정보 확인\n• 수영 방수 기능으로 다양한 운동 지원', 
+NULL, NULL, 4.65, 892, 'system'),
+
+('무선 마우스', 35000.00, 0, 'https://images.unsplash.com/photo-1527814050087-3793815479db?w=500&h=500&fit=crop', 
+'에르고노믹 무선 마우스로 장시간 사용해도 편안합니다. 손목의 피로를 줄이고 정밀한 작업을 도와줍니다.', 
+'• 인체공학 디자인으로 손목 피로 감소\n• 6개월 배터리 수명으로 오래 사용\n• 고정밀 센서로 정확한 커서 제어\n• 조용한 클릭으로 조용한 환경에서 사용\n• 다양한 표면에서 작동하는 광학 센서', 
+NULL, NULL, 4.55, 456, 'system'),
+
+('USB-C 케이블', 12000.00, 0, 'https://images.unsplash.com/photo-1587825140708-dfaf72ae4b04?w=500&h=500&fit=crop', 
+'고속 충전 USB-C 케이블로 빠르게 충전하세요. 데이터 전송과 충전을 동시에 지원하는 프리미엄 케이블입니다.', 
+'• 고속 충전 지원으로 빠른 충전 시간\n• 내구성 강화된 나일론 브레이드 소재\n• 다양한 길이 옵션 제공 (1m, 2m)\n• 고속 데이터 전송 지원 (USB 3.0)\n• 다양한 기기 호환성', 
+NULL, NULL, 4.40, 234, 'system'),
+
+('태블릿 거치대', 28000.00, 0, 'https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=500&h=500&fit=crop', 
+'조절 가능한 태블릿 거치대로 다양한 각도에서 사용하세요. 독서부터 영상 시청까지 최적의 각도로 설정할 수 있습니다.', 
+'• 각도 조절 가능으로 사용자 맞춤형 설정\n• 안정적인 지지대로 흔들림 방지\n• 접이식 디자인으로 휴대성 우수\n• 범용 호환성으로 다양한 태블릿 지원\n• 알루미늄 소재로 가볍고 튼튼', 
+NULL, NULL, 4.50, 189, 'system'),
+
+('무선 키보드', 75000.00, 0, 'https://images.unsplash.com/photo-1587829741301-dc918b0c716f?w=500&h=500&fit=crop', 
+'프리미엄 무선 키보드로 편안한 타이핑을 경험하세요. 기계식 키 스위치로 만족스러운 타건감을 제공합니다.', 
+'• 기계식 키로 만족스러운 타건감\n• 백라이트 지원으로 어두운 곳에서도 사용\n• 1년 배터리 수명으로 오래 사용\n• 멀티 디바이스 연결로 여러 기기 제어\n• 조용한 스위치로 조용한 환경에서 사용', 
+NULL, NULL, 4.70, 567, 'system'),
+
+('게이밍 마우스패드', 25000.00, 0, 'https://images.unsplash.com/photo-1612198188060-c7c2a3b66eae?w=500&h=500&fit=crop', 
+'대형 게이밍 마우스패드로 정밀한 조작이 가능합니다. 부드러운 표면으로 마우스 움직임을 정확하게 추적합니다.', 
+'• 대형 사이즈로 넓은 움직임 지원\n• 부드러운 표면으로 정밀한 조작\n• 미끄럼 방지 바닥으로 고정\n• 내구성 있는 소재로 오래 사용\n• 다양한 디자인으로 개성 표현', 
+NULL, NULL, 4.45, 312, 'system'),
+
+('웹캠 HD', 95000.00, 0, 'https://images.unsplash.com/photo-1587825143138-044a3fa50491?w=500&h=500&fit=crop', 
+'고화질 웹캠으로 선명한 영상 통화를 즐기세요. 자동 조명 보정 기능으로 어두운 환경에서도 밝은 화면을 제공합니다.', 
+'• Full HD 1080p 해상도로 선명한 화질\n• 자동 조명 보정으로 어두운 곳에서도 밝게\n• 내장 마이크로 깨끗한 음질\n• 프라이버시 셔터로 보안 강화\n• 다양한 플랫폼 지원 (Windows, Mac, Linux)', 
+NULL, NULL, 4.60, 423, 'system'),
+
+('스탠딩 데스크', 180000.00, 0, 'https://images.unsplash.com/photo-1524758631624-e2822e304c36?w=500&h=500&fit=crop', 
+'전동 스탠딩 데스크로 건강한 업무 환경을 만들어보세요. 앉아서 일하는 시간을 줄이고 건강을 지킬 수 있습니다.', 
+'• 전동 높이 조절로 편리한 사용\n• 넓은 작업 공간으로 다양한 용도 지원\n• 안정적인 구조로 흔들림 방지\n• 메모리 기능으로 자주 사용하는 높이 저장\n• 조용한 모터로 조용한 환경에서 사용', 
+NULL, NULL, 4.75, 234, 'system'),
+
+('USB 허브', 35000.00, 0, 'https://images.unsplash.com/photo-1625842268584-8f3296236761?w=500&h=500&fit=crop', 
+'다중 포트 USB 허브로 여러 기기를 동시에 연결하세요. 고속 데이터 전송을 지원하는 프리미엄 허브입니다.', 
+'• 7포트 USB 3.0 허브로 여러 기기 연결\n• 고속 데이터 전송 지원 (5Gbps)\n• 개별 전원 스위치로 선택적 사용\n• 컴팩트한 디자인으로 공간 절약\n• 다양한 기기 호환성', 
+NULL, NULL, 4.50, 345, 'system'),
+
+('모니터 스탠드', 55000.00, 0, 'https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=500&h=500&fit=crop', 
+'조절 가능한 모니터 스탠드로 최적의 시야각을 설정하세요. 목과 어깨의 피로를 줄이고 작업 효율을 높여줍니다.', 
+'• 높이 및 각도 조절로 맞춤형 설정\n• 넓은 지지대로 안정적인 고정\n• 케이블 관리 기능으로 깔끔한 정리\n• 다양한 모니터 크기 지원 (24~32인치)\n• 알루미늄 소재로 가볍고 튼튼', 
+NULL, NULL, 4.65, 278, 'system'),
+
+('블루투스 어댑터', 18000.00, 0, 'https://images.unsplash.com/photo-1587825140708-dfaf72ae4b04?w=500&h=500&fit=crop', 
+'USB 블루투스 어댑터로 기존 PC에 무선 기능을 추가하세요. 간편한 설치로 즉시 사용할 수 있습니다.', 
+'• USB 플러그 앤 플레이로 간편한 설치\n• 블루투스 5.0 지원으로 안정적인 연결\n• 다양한 기기와 호환 (이어폰, 스피커, 키보드 등)\n• 컴팩트한 디자인으로 공간 절약\n• 저전력 소비로 효율적인 사용', 
+NULL, NULL, 4.40, 156, 'system'),
+
+('노이즈 캔슬링 이어폰', 150000.00, 0, 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500&h=500&fit=crop', 
+'프리미엄 노이즈 캔슬링 이어폰으로 완벽한 음악 감상을 즐기세요. 외부 소음을 차단하고 최고의 음질을 제공합니다.', 
+'• 액티브 노이즈 캔슬링으로 주변 소음 완전 차단\n• 프리미엄 드라이버로 고음질 구현\n• 40시간 배터리 수명으로 장시간 사용\n• 터치 제어로 편리한 조작\n• 프리미엄 케이스 포함으로 안전한 보관', 
+NULL, NULL, 4.85, 1024, 'system');
+
+-- 의류 (category_id = 1)
+INSERT IGNORE INTO products (name, price, discount, image, description, details, category_id, sub_category_id, rating, review_count, created_by) VALUES
+('데님 재킷', 89000.00, 0, 'https://images.unsplash.com/photo-1551028719-00167b16eac5?w=500&h=500&fit=crop', 
+'클래식한 데님 재킷으로 스타일리시한 룩을 완성하세요. 다양한 스타일에 매치하기 좋은 베이직 아이템입니다.', 
+'• 프리미엄 데님 소재로 내구성 우수\n• 다양한 사이즈 제공 (S~XL)\n• 클래식한 디자인으로 오래 입을 수 있음\n• 세탁 후에도 형태 유지\n• 다양한 스타일링 가능', 
+1, 1, 4.60, 234, 'system'),
+
+('후드티', 45000.00, 0, 'https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=500&h=500&fit=crop', 
+'편안한 후드티로 일상적인 룩을 연출하세요. 부드러운 소재로 착용감이 뛰어나며 다양한 컬러로 제공됩니다.', 
+'• 부드러운 면 소재로 착용감 우수\n• 두꺼운 후드로 보온성 좋음\n• 다양한 컬러 옵션 제공\n• 세탁 후에도 형태 유지\n• 캐주얼한 스타일링에 완벽', 
+1, 1, 4.50, 456, 'system'),
+
+('슬랙스', 65000.00, 0, 'https://images.unsplash.com/photo-1473966968600-fa801b869a1a?w=500&h=500&fit=crop', 
+'정장용 슬랙스로 세련된 비즈니스 룩을 완성하세요. 드레이프감이 뛰어나고 다양한 사이즈로 제공됩니다.', 
+'• 고급 원단으로 드레이프감 우수\n• 정장용으로 비즈니스 룩에 적합\n• 다양한 사이즈 및 길이 옵션\n• 주름 방지 기능으로 관리 편리\n• 다양한 상의와 매치 가능', 
+1, 1, 4.70, 345, 'system'),
+
+('니트 스웨터', 75000.00, 0, 'https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=500&h=500&fit=crop', 
+'따뜻한 니트 스웨터로 가을과 겨울을 따뜻하게 보내세요. 부드러운 터치감과 보온성이 뛰어납니다.', 
+'• 부드러운 니트 소재로 착용감 우수\n• 보온성이 뛰어나 추운 날씨에 적합\n• 다양한 컬러와 패턴 제공\n• 세탁 후에도 형태 유지\n• 레이어드 스타일링에 완벽', 
+1, 1, 4.65, 567, 'system'),
+
+('트레이닝복 세트', 120000.00, 0, 'https://images.unsplash.com/photo-1552902865-b72c031ac5ea?w=500&h=500&fit=crop', 
+'편안한 트레이닝복 세트로 운동과 일상을 모두 대비하세요. 기능성 소재로 땀 흡수와 건조가 빠릅니다.', 
+'• 기능성 소재로 땀 흡수 및 건조 빠름\n• 활동성 좋은 디자인으로 운동에 적합\n• 세트 구성으로 스타일링 편리\n• 다양한 사이즈 제공\n• 세탁 후에도 형태 유지', 
+1, 1, 4.55, 423, 'system'),
+
+('코트', 180000.00, 0, 'https://images.unsplash.com/photo-1539533018447-63fcce2678e3?w=500&h=500&fit=crop', 
+'우아한 롱 코트로 세련된 겨울 룩을 완성하세요. 고급 원단과 정교한 마감으로 오래 입을 수 있는 아이템입니다.', 
+'• 고급 원단으로 내구성과 보온성 우수\n• 롱 기장으로 보온성 향상\n• 정교한 마감으로 고급스러운 느낌\n• 다양한 사이즈 제공\n• 클래식한 디자인으로 오래 입을 수 있음', 
+1, 2, 4.80, 234, 'system');
+
+-- 가전용품 (category_id = 2)
+INSERT IGNORE INTO products (name, price, discount, image, description, details, category_id, sub_category_id, rating, review_count, created_by) VALUES
+('스마트 TV', 1200000.00, 0, 'https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=500&h=500&fit=crop', 
+'4K UHD 스마트 TV로 생생한 화질을 경험하세요. 스마트 기능이 탑재되어 다양한 콘텐츠를 즐길 수 있습니다.', 
+'• 4K UHD 해상도로 생생한 화질\n• 스마트 기능으로 다양한 앱 사용\n• HDR 지원으로 더욱 선명한 화면\n• 다양한 크기 옵션 제공 (55인치, 65인치)\n• 음성 인식 리모컨으로 편리한 조작', 
+2, 9, 4.75, 567, 'system'),
+
+('무선 청소기', 350000.00, 0, 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=500&h=500&fit=crop', 
+'강력한 무선 청소기로 깨끗한 집을 만들어보세요. 강력한 흡입력과 긴 배터리 수명으로 효율적인 청소가 가능합니다.', 
+'• 강력한 흡입력으로 깊은 청소\n• 60분 연속 사용 가능한 배터리\n• 다양한 헤드로 다양한 용도 지원\n• 경량 디자인으로 사용 편리\n• HEPA 필터로 미세먼지 제거', 
+2, 12, 4.70, 678, 'system'),
+
+('에어프라이어', 180000.00, 28, 'https://images.unsplash.com/photo-1556910096-6f5e5ad8bcf4?w=500&h=500&fit=crop', 
+'대용량 에어프라이어로 건강한 요리를 즐기세요. 기름 없이도 바삭하고 맛있는 요리를 만들 수 있습니다.', 
+'• 대용량으로 가족 단위 요리 가능\n• 기름 없이 바삭한 요리 가능\n• 다양한 요리 모드 제공\n• 빠른 예열로 시간 절약\n• 세척이 쉬운 분리형 부품', 
+2, 15, 4.65, 789, 'system'),
+
+('로봇 청소기', 450000.00, 27, 'https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=500&h=500&fit=crop', 
+'스마트 로봇 청소기로 자동으로 깨끗한 집을 유지하세요. 스마트 매핑 기능으로 효율적인 청소 경로를 설정합니다.', 
+'• 스마트 매핑으로 효율적인 청소\n• 자동 충전 기능으로 연속 청소\n• 모바일 앱으로 원격 제어\n• 강력한 흡입력으로 깊은 청소\n• 다양한 바닥재에 적합', 
+2, 12, 4.80, 456, 'system'),
+
+('공기청정기', 320000.00, 0, 'https://images.unsplash.com/photo-1585771724684-38269d6639fd?w=500&h=500&fit=crop', 
+'HEPA 필터 공기청정기로 깨끗한 공기를 마시세요. 미세먼지와 유해물질을 효과적으로 제거합니다.', 
+'• HEPA 필터로 미세먼지 99.97% 제거\n• 실시간 공기질 모니터링\n• 조용한 작동으로 수면 방해 없음\n• 스마트 센서로 자동 모드\n• 넓은 공간 청정 가능 (30평 이상)', 
+2, 13, 4.75, 345, 'system'),
+
+('전자레인지', 150000.00, 0, 'https://images.unsplash.com/photo-1574269909862-7e1d70bb8078?w=500&h=500&fit=crop', 
+'인버터 전자레인지로 빠르고 균일하게 데울 수 있습니다. 다양한 요리 기능으로 활용도가 높습니다.', 
+'• 인버터 기술로 균일한 가열\n• 다양한 요리 모드 제공\n• 대용량으로 큰 그릇도 사용 가능\n• 자동 요리 기능으로 편리함\n• 세척이 쉬운 내부 구조', 
+2, 15, 4.60, 234, 'system');
+
+-- 푸드 (category_id = 3)
+INSERT IGNORE INTO products (name, price, discount, image, description, details, category_id, sub_category_id, rating, review_count, created_by) VALUES
+('유기농 채소 세트', 25000.00, 0, 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=500&h=500&fit=crop', 
+'신선한 유기농 채소 세트로 건강한 식사를 시작하세요. 농약 없이 재배된 신선한 채소를 직접 배송해드립니다.', 
+'• 유기농 인증 받은 신선한 채소\n• 당일 수확 후 바로 배송\n• 다양한 채소 구성 (10종 이상)\n• 신선도 보장으로 오래 보관 가능\n• 건강한 식단에 완벽', 
+3, 17, 4.70, 567, 'system'),
+
+('프리미엄 한우', 85000.00, 26, 'https://images.unsplash.com/photo-1603048297172-c92544798d5a?w=500&h=500&fit=crop', 
+'1등급 한우 세트로 프리미엄 고기를 즐기세요. 최상급 한우를 엄선하여 신선하게 배송해드립니다.', 
+'• 1등급 한우로 최상급 품질\n• 신선도 보장으로 당일 배송\n• 다양한 부위 구성 (등심, 안심, 갈비 등)\n• 냉동 보관으로 오래 보관 가능\n• 특별한 날에 완벽한 선택', 
+3, 17, 4.85, 234, 'system'),
+
+('수입 치즈 세트', 45000.00, 0, 'https://images.unsplash.com/photo-1618164436249-4473940d1f5c?w=500&h=500&fit=crop', 
+'프리미엄 수입 치즈로 다양한 맛을 즐기세요. 세계 각국의 고급 치즈를 엄선하여 구성했습니다.', 
+'• 세계 각국의 프리미엄 치즈\n• 다양한 맛과 질감의 치즈 구성\n• 신선도 보장으로 최적의 맛\n• 와인과 함께 즐기기 좋음\n• 특별한 날에 완벽한 선택', 
+3, 17, 4.65, 345, 'system'),
+
+('신선 과일 박스', 35000.00, 0, 'https://images.unsplash.com/photo-1619566636858-adf3ef46400b?w=500&h=500&fit=crop', 
+'계절 과일 세트로 달콤한 과일을 즐기세요. 제철 과일을 엄선하여 신선하게 배송해드립니다.', 
+'• 제철 과일로 최상급 품질\n• 당일 수확 후 바로 배송\n• 다양한 과일 구성 (5~7종)\n• 신선도 보장으로 오래 보관 가능\n• 건강한 간식으로 완벽', 
+3, 17, 4.75, 456, 'system'),
+
+('건강 간식 세트', 28000.00, 0, 'https://images.unsplash.com/photo-1551024506-0bccd828d307?w=500&h=500&fit=crop', 
+'다양한 건강 간식으로 영양을 챙기세요. 천연 재료로 만든 건강한 간식을 구성했습니다.', 
+'• 천연 재료로 만든 건강한 간식\n• 다양한 종류의 간식 구성 (10종 이상)\n• 첨가물 없이 안전하게 제조\n• 다이어트 중에도 안심하고 즐길 수 있음\n• 어린이 간식으로도 완벽', 
+3, 20, 4.60, 678, 'system'),
+
+('유기농 꿀', 32000.00, 0, 'https://images.unsplash.com/photo-1587049352846-4a222e784d38?w=500&h=500&fit=crop', 
+'천연 유기농 꿀로 건강을 챙기세요. 자연 그대로의 달콤함과 영양을 제공합니다.', 
+'• 유기농 인증 받은 천연 꿀\n• 첨가물 없이 자연 그대로의 맛\n• 다양한 영양소 함유\n• 오래 보관 가능한 자연 보존\n• 건강한 단맛으로 설탕 대체 가능', 
+3, 23, 4.70, 234, 'system');
+
+-- 뷰티 (category_id = 4)
+INSERT IGNORE INTO products (name, price, discount, image, description, details, category_id, sub_category_id, rating, review_count, created_by) VALUES
+('스킨케어 세트', 120000.00, 34, 'https://images.unsplash.com/photo-1556228578-0d85b1a4d571?w=500&h=500&fit=crop', 
+'프리미엄 스킨케어 세트로 건강한 피부를 만들어보세요. 모든 피부 타입에 적합한 완벽한 스킨케어 루틴을 제공합니다.', 
+'• 클렌징, 토너, 세럼, 크림 완벽 구성\n• 모든 피부 타입에 적합\n• 수분 공급과 영양 공급 동시에\n• 프리미엄 원료로 안전하게 제조\n• 지속적인 사용으로 피부 개선', 
+4, 25, 4.75, 567, 'system'),
+
+('립스틱 세트', 65000.00, 0, 'https://images.unsplash.com/photo-1583241805004-e54e0752c8e5?w=500&h=500&fit=crop', 
+'다양한 컬러 립스틱으로 다양한 룩을 연출하세요. 오래 지속되는 발색과 부드러운 발림감을 제공합니다.', 
+'• 다양한 컬러 구성 (5~10색)\n• 오래 지속되는 발색\n• 부드러운 발림감으로 입술 보호\n• 수분 공급으로 입술 촉촉함 유지\n• 다양한 스타일에 매치 가능', 
+4, 26, 4.65, 789, 'system'),
+
+('향수', 150000.00, 31, 'https://images.unsplash.com/photo-1541643600914-78b084683601?w=500&h=500&fit=crop', 
+'프리미엄 향수로 고급스러운 향을 즐기세요. 오래 지속되는 향과 세련된 향조를 제공합니다.', 
+'• 프리미엄 향료로 고급스러운 향\n• 오래 지속되는 향기 (8시간 이상)\n• 세련된 향조로 다양한 상황에 적합\n• 우아한 디자인으로 소장 가치\n• 특별한 날에 완벽한 선택', 
+4, 27, 4.80, 345, 'system'),
+
+('마스크팩 세트', 35000.00, 0, 'https://images.unsplash.com/photo-1556229010-6c3f2c9ca5f8?w=500&h=500&fit=crop', 
+'수분 마스크팩 10매로 피부를 촉촉하게 만들어보세요. 다양한 기능의 마스크팩을 구성했습니다.', 
+'• 수분 공급 마스크팩 10매 구성\n• 다양한 기능 (수분, 미백, 탄력 등)\n• 부드러운 시트로 피부 밀착\n• 즉시 효과로 빠른 피부 개선\n• 주 2~3회 사용으로 피부 관리', 
+4, 25, 4.60, 456, 'system'),
+
+('선크림', 28000.00, 0, 'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=500&h=500&fit=crop', 
+'자외선 차단 선크림으로 피부를 보호하세요. 일상 생활에서 필수적인 자외선 차단을 제공합니다.', 
+'• SPF50+ PA++++로 강력한 자외선 차단\n• 끈적임 없는 가벼운 사용감\n• 수분 공급으로 피부 촉촉함 유지\n• 메이크업 베이스로도 사용 가능\n• 매일 사용하기 좋은 크기', 
+4, 32, 4.70, 678, 'system'),
+
+('에센스', 95000.00, 0, 'https://images.unsplash.com/photo-1616394584738-fc6e612e71b9?w=500&h=500&fit=crop', 
+'안티에이징 에센스로 젊은 피부를 유지하세요. 집중 케어로 피부 노화를 방지하고 개선합니다.', 
+'• 안티에이징 성분으로 노화 방지\n• 집중 케어로 피부 개선\n• 빠른 흡수로 사용감 우수\n• 지속적인 사용으로 효과 극대화\n• 모든 피부 타입에 적합', 
+4, 25, 4.75, 234, 'system');
+
+-- 홈인테리어 (category_id = 5)
+INSERT IGNORE INTO products (name, price, discount, image, description, details, category_id, sub_category_id, rating, review_count, created_by) VALUES
+('디퓨저 세트', 45000.00, 31, 'https://images.unsplash.com/photo-1606800054160-8e3c14e1a0b0?w=500&h=500&fit=crop', 
+'아로마 디퓨저로 집안을 향기롭게 만들어보세요. 다양한 아로마 오일과 함께 사용하여 분위기를 연출할 수 있습니다.', 
+'• 아로마 오일과 함께 사용하는 디퓨저\n• 다양한 향 옵션 제공\n• 조용한 작동으로 수면 방해 없음\n• LED 조명 기능으로 분위기 연출\n• 넓은 공간 향기 확산', 
+5, 37, 4.65, 345, 'system'),
+
+('쿠션 세트', 65000.00, 0, 'https://images.unsplash.com/photo-1584100936595-c0655cf3c8f0?w=500&h=500&fit=crop', 
+'편안한 소파 쿠션으로 아늑한 공간을 만들어보세요. 부드러운 소재와 다양한 디자인으로 인테리어를 완성합니다.', 
+'• 부드러운 소재로 착석감 우수\n• 다양한 디자인과 컬러 제공\n• 세트 구성으로 스타일링 편리\n• 세탁 가능하여 관리 편리\n• 다양한 공간에 활용 가능', 
+5, 33, 4.70, 456, 'system'),
+
+('조명 램프', 85000.00, 0, 'https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=500&h=500&fit=crop', 
+'인테리어 조명으로 아늑한 분위기를 연출하세요. 다양한 조명 모드로 상황에 맞는 분위기를 만들 수 있습니다.', 
+'• 다양한 조명 모드 제공 (밝기 조절 가능)\n• 우아한 디자인으로 인테리어 포인트\n• LED 조명으로 오래 사용 가능\n• 터치 제어로 편리한 조작\n• 다양한 공간에 활용 가능', 
+5, 35, 4.75, 234, 'system'),
+
+('식물 화분 세트', 55000.00, 0, 'https://images.unsplash.com/photo-1485955900006-10f4d324d411?w=500&h=500&fit=crop', 
+'공기정화 식물로 건강한 공간을 만들어보세요. 공기 정화 기능이 있는 식물과 예쁜 화분을 구성했습니다.', 
+'• 공기 정화 기능이 있는 식물\n• 예쁜 화분과 함께 구성\n• 초보자도 키우기 쉬운 식물\n• 집안 공기질 개선\n• 인테리어 포인트로 활용', 
+5, 37, 4.60, 567, 'system'),
+
+('커튼', 120000.00, 0, 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=500&h=500&fit=crop', 
+'블랙아웃 커튼으로 편안한 수면을 즐기세요. 빛을 완전히 차단하여 어두운 환경을 만들어줍니다.', 
+'• 블랙아웃 기능으로 빛 완전 차단\n• 다양한 사이즈 옵션 제공\n• 보온 기능으로 에너지 절약\n• 세탁 가능하여 관리 편리\n• 다양한 디자인과 컬러 제공', 
+5, 34, 4.80, 345, 'system'),
+
+('러그', 180000.00, 0, 'https://images.unsplash.com/photo-1556911220-bff31c812dba?w=500&h=500&fit=crop', 
+'프리미엄 러그로 고급스러운 공간을 완성하세요. 부드러운 터치감과 세련된 디자인으로 인테리어를 업그레이드합니다.', 
+'• 프리미엄 소재로 부드러운 터치감\n• 세련된 디자인으로 인테리어 포인트\n• 다양한 사이즈 옵션 제공\n• 내구성 우수로 오래 사용 가능\n• 다양한 공간에 활용 가능', 
+5, 33, 4.75, 234, 'system');

@@ -45,3 +45,4 @@ security:
         - /actuator/**
         - /internal/**
         - /PRODUCT/product/**
+        - /PRODUCT/category/**
