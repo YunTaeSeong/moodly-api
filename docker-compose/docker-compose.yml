@@ -27,17 +27,17 @@ services:
       dockerfile: auth-service/Dockerfile
     image: tsyundeveloper/moodly-auth:latest
     container_name: moodly-auth
-    ports:
-      - "8081:8081"
+    # ports:
+    #   - "8081:8081"
+    expose:
+      - "8081"
     environment:
       SPRING_APPLICATION_NAME: auth-service
       SPRING_PROFILES_ACTIVE: docker
       DB_USERNAME: ${DB_USERNAME}
       DB_PASSWORD: ${DB_PASSWORD}
-
       JWT_ACCESS_TOKEN: ${JWT_ACCESS_TOKEN}
       JWT_REFRESH_TOKEN: ${JWT_REFRESH_TOKEN}
-
       JWT_SECRET: ${JWT_SECRET}
     depends_on:
       moodly-auth-db:
@@ -65,16 +65,16 @@ services:
       dockerfile: user-service/Dockerfile
     image: tsyundeveloper/moodly-user:latest
     container_name: moodly-user
-    ports:
-      - "8082:8082"
+    # ports:
+    #   - "8082:8082"
+    expose:
+      - "8082"
     environment:
       SPRING_APPLICATION_NAME: user-service
       SPRING_PROFILES_ACTIVE: docker
       DB_USERNAME: ${DB_USERNAME}
       DB_PASSWORD: ${DB_PASSWORD}
-
       JWT_SECRET: ${JWT_SECRET}
-
       NAVER_MAIL_USERNAME: ${NAVER_MAIL_USERNAME}
       NAVER_MAIL_PASSWORD: ${NAVER_MAIL_PASSWORD}
       APP_FRONTEND_BASE_URL: http://localhost:3000
@@ -106,14 +106,15 @@ services:
       dockerfile: product-service/Dockerfile
     image: tsyundeveloper/moodly-product:latest
     container_name: moodly-product
-    ports:
-      - "8083:8083"
+    # ports:
+    #   - "8083:8083"
+    expose:
+      - "8083"
     environment:
       SPRING_APPLICATION_NAME: product-service
       SPRING_PROFILES_ACTIVE: docker
       DB_USERNAME: ${DB_USERNAME}
       DB_PASSWORD: ${DB_PASSWORD}
-
       JWT_SECRET: ${JWT_SECRET}
     depends_on:
       moodly-product-db:
@@ -131,12 +132,12 @@ services:
       dockerfile: gateway-service/Dockerfile
     image: tsyundeveloper/moodly-gateway:latest
     container_name: moodly-gateway
+    # 외부 진입점은 Gateway만
     ports:
       - "8072:8072"
     environment:
       SPRING_APPLICATION_NAME: gateway-service
       SPRING_PROFILES_ACTIVE: docker
-
       JWT_SECRET: ${JWT_SECRET}
     depends_on:
       moodly-auth:

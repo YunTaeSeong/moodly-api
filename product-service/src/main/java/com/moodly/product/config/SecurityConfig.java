@@ -34,6 +34,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         // 내부 호출 전용 (Feign)
                         .requestMatchers("/internal/**").permitAll()
+                        .requestMatchers("/actuator/**").permitAll()
 
                         // 공개 API (상품 목록 조회, 카테고리 조회)
                         .requestMatchers(HttpMethod.GET, "/product/**").permitAll()

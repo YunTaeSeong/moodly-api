@@ -27,6 +27,15 @@ security:
       audience: moodly-api
       roles-claim: roles
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: always
+
 app:
   mail:
     from: "test@test.com"

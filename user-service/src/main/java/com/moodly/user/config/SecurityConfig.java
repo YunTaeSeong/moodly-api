@@ -34,6 +34,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         // 내부 호출 전용 (Feign)
                         .requestMatchers("/internal/**").permitAll()
+                        .requestMatchers("/actuator/**").permitAll()
 
                         // 공개 API (우선 회원가입만)
                         .requestMatchers(

@@ -18,13 +18,6 @@ spring:
       hibernate:
         format_sql: true
 
-
-#security:
-#  jwt:
-#    issuer: moodly-auth
-#    audience: moodly-api
-#    roles-claim: roles
-
 security:
   jwt:
     common:
