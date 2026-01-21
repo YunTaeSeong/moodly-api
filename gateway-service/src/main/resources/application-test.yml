@@ -36,6 +36,13 @@ spring:
               filters:
                 - RewritePath=/PRODUCT/(?<segment>.*), /${segment}
 
+            - id: cart
+              uri: http://localhost:8084
+              predicates:
+                - Path=/CART/**
+              filters:
+                - RewritePath=/CART/(?<segment>.*), /${segment}
+
           globalcors:
             cors-configurations:
               '[/**]':

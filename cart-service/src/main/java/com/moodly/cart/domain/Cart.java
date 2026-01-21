@@ -1,10 +1,12 @@
-package domain;
+package com.moodly.cart.domain;
 
+import com.moodly.common.domain.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 @Entity
 @Table(
@@ -23,10 +25,11 @@ import lombok.NoArgsConstructor;
         }
 )
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class Cart {
+@SuperBuilder
+public class Cart extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,11 +42,16 @@ public class Cart {
     private Long productId;
 
     @Column(nullable = false)
-    @Builder.Default
-    private Integer quantity = 1;
+    private Integer quantity;
 
     @Column(nullable = false)
-    @Builder.Default
-    private boolean checked = true;
+    private boolean checked;
 
+    @PrePersist
+    protected void onPrePersist() {
+        if (this.quantity == null) {
+            this.quantity = 1;
+        }
+        // checked의 기본값 false이지만, service에서 명시적으로 true로 설정
+    }
 }

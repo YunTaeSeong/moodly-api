@@ -26,3 +26,6 @@ security:
   jwt:
     common:
       secret: ${JWT_SECRET}
+
+product-service:
+  base_url: http://moodly-product:8083

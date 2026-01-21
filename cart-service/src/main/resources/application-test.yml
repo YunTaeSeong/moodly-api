@@ -24,3 +24,6 @@ management:
   endpoint:
     health:
       show-details: always
+
+product-service:
+  base_url: http://localhost:8083
