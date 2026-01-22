@@ -323,5 +323,143 @@ class ProductServiceTest {
         assertTrue(products2.isEmpty());
     }
 
+    @DisplayName("오늘의 핫딜 : 할인율 높은 순")
+    @Test
+    void 오늘의_핫딜_할인율_높은_순() {
+        // given
+        int limit = 10;
+
+        Product p1 = mock(Product.class);
+        Product p2 = mock(Product.class);
+        Product p3 = mock(Product.class);
+
+        when(p1.getId()).thenReturn(1L);
+        when(p1.getCategoryId()).thenReturn(10L);
+        when(p1.getSubCategoryId()).thenReturn(100L);
+
+        when(p2.getId()).thenReturn(2L);
+        when(p2.getCategoryId()).thenReturn(20L);
+        when(p2.getSubCategoryId()).thenReturn(null);
+
+        when(p3.getId()).thenReturn(3L);
+        when(p3.getCategoryId()).thenReturn(null);
+        when(p3.getSubCategoryId()).thenReturn(null);
+
+        when(productRepository.findHotDealProducts(limit)).thenReturn(List.of(p1, p2, p3));
+
+        Category c1 = mock(Category.class);
+        Category c2 = mock(Category.class);
+
+        when(c1.getId()).thenReturn(10L);
+        when(c1.getName()).thenReturn("의류");
+
+        when(c2.getId()).thenReturn(20L);
+        when(c2.getName()).thenReturn("패션");
+
+        when(categoryRepository.findAll()).thenReturn(List.of(c1, c2));
+
+        SubCategory s1 = mock(SubCategory.class);
+        when(s1.getId()).thenReturn(100L);
+        when(s1.getName()).thenReturn("의류 서브카테고리");
+
+        when(subCategoryRepository.findAll()).thenReturn(List.of(s1));
+
+        // when
+        List<ProductDto> hotDealProducts = productService.getHotDealProducts(limit);
+
+        // then
+        assertNotNull(hotDealProducts);
+        assertEquals(3, hotDealProducts.size());
+
+        ProductDto dto1 = hotDealProducts.get(0);
+        assertEquals(1L, dto1.getId());
+        assertEquals("의류", dto1.getCategoryName());
+        assertEquals("의류 서브카테고리", dto1.getSubCategoryName());
+
+        ProductDto dto2 = hotDealProducts.get(1);
+        assertEquals(2L, dto2.getId());
+        assertEquals("패션", dto2.getCategoryName());
+        assertNull(dto2.getSubCategoryName());
+
+        ProductDto dto3 = hotDealProducts.get(2);
+        assertEquals(3L, dto3.getId());
+        assertNull(dto3.getCategoryName());
+        assertNull(dto3.getSubCategoryName());
+
+        // then
+        verify(productRepository).findHotDealProducts(limit);
+        verify(categoryRepository).findAll();
+        verify(subCategoryRepository).findAll();
+    }
+
+    @DisplayName("오늘의 특가 : 최신순")
+    @Test
+    void 오늘의_특가_최신순() {
+        // given
+        int limit = 10;
+
+        Product p1 = mock(Product.class);
+        Product p2 = mock(Product.class);
+        Product p3 = mock(Product.class);
+
+        when(p1.getId()).thenReturn(1L);
+        when(p1.getCategoryId()).thenReturn(10L);
+        when(p1.getSubCategoryId()).thenReturn(100L);
+
+        when(p2.getId()).thenReturn(2L);
+        when(p2.getCategoryId()).thenReturn(20L);
+        when(p2.getSubCategoryId()).thenReturn(null);
+
+        when(p3.getId()).thenReturn(3L);
+        when(p3.getCategoryId()).thenReturn(null);
+        when(p3.getSubCategoryId()).thenReturn(null);
+
+        when(productRepository.findTodaySpecialProducts(limit)).thenReturn(List.of(p1, p2, p3));
+
+        Category c1 = mock(Category.class);
+        Category c2 = mock(Category.class);
+
+        when(c1.getId()).thenReturn(10L);
+        when(c1.getName()).thenReturn("의류");
+
+        when(c2.getId()).thenReturn(20L);
+        when(c2.getName()).thenReturn("패션");
+
+        when(categoryRepository.findAll()).thenReturn(List.of(c1, c2));
+
+        SubCategory s1 = mock(SubCategory.class);
+        when(s1.getId()).thenReturn(100L);
+        when(s1.getName()).thenReturn("의류 서브카테고리");
+
+        when(subCategoryRepository.findAll()).thenReturn(List.of(s1));
+
+        // when
+        List<ProductDto> todaySpecialProducts = productService.getTodaySpecialProducts(limit);
+
+        assertNotNull(todaySpecialProducts);
+        assertEquals(3, todaySpecialProducts.size());
+
+        ProductDto dto1 = todaySpecialProducts.get(0);
+        assertEquals(1L, dto1.getId());
+        assertEquals("의류", dto1.getCategoryName());
+        assertEquals("의류 서브카테고리", dto1.getSubCategoryName());
+
+        ProductDto dto2 = todaySpecialProducts.get(1);
+        assertEquals(2L, dto2.getId());
+        assertEquals("패션", dto2.getCategoryName());
+        assertNull(dto2.getSubCategoryName());
+
+        ProductDto dto3 = todaySpecialProducts.get(2);
+        assertEquals(3L, dto3.getId());
+        assertNull(dto3.getCategoryName());
+        assertNull(dto3.getSubCategoryName());
+
+        // then
+        verify(productRepository).findTodaySpecialProducts(limit);
+        verify(categoryRepository).findAll();
+        verify(subCategoryRepository).findAll();
+
+    }
+
 
 }

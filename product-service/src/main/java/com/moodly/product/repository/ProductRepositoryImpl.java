@@ -8,8 +8,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-import static com.moodly.product.domain.QProduct.product;
-
 @Component
 @RequiredArgsConstructor
 public class ProductRepositoryImpl implements ProductRepositoryCustom {
@@ -25,6 +23,26 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
                 .where(product.name.startsWithIgnoreCase(keyword))
                 .orderBy(product.name.asc())
                 .limit(20)
+                .fetch();
+    }
+
+    @Override
+    public List<Product> findHotDealProducts(int limit) {
+        return queryFactory
+                .selectFrom(product)
+                .where(product.discount.gt(0))
+                .orderBy(product.discount.desc()) // 할인율 높은 순
+                .limit(limit)
+                .fetch();
+    }
+
+    @Override
+    public List<Product> findTodaySpecialProducts(int limit) {
+        return queryFactory
+                .selectFrom(product)
+                .where(product.discount.gt(0))
+                .orderBy(product.createdDate.desc()) // 최신순
+                .limit(limit)
                 .fetch();
     }
 }

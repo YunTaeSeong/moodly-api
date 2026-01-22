@@ -58,4 +58,30 @@ public class ProductApiController {
                 .map(ProductResponse::response)
                 .toList();
     }
+
+    /**
+     * 오늘의 핫딜 상품 조회 (할인율 높은 순)
+     */
+    @GetMapping("/hot-deal")
+    public List<ProductResponse> getHotDealProducts(
+            @RequestParam(defaultValue = "10") int limit
+    ) {
+        List<ProductDto> productDtos = productService.getHotDealProducts(limit);
+        return productDtos.stream()
+                .map(ProductResponse::response)
+                .toList();
+    }
+
+    /**
+     * 오늘의 특가 상품 조회 (최신순)
+     */
+    @GetMapping("/today-special")
+    public List<ProductResponse> getTodaySpecialProducts(
+            @RequestParam(defaultValue = "10") int limit
+    ) {
+        List<ProductDto> productDtos = productService.getTodaySpecialProducts(limit);
+        return productDtos.stream()
+                .map(ProductResponse::response)
+                .toList();
+    }
 }

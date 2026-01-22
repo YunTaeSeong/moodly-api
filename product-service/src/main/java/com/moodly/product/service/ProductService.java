@@ -91,6 +91,34 @@ public class ProductService {
                 .toList();
     }
 
+    public List<ProductDto> getHotDealProducts(int limit) {
+        List<Product> products = productRepository.findHotDealProducts(limit);
+        Map<Long, String> categoryMap = getCategoryMap();
+        Map<Long, String> subCategoryMap = getSubCategoryMap();
+
+        return products.stream()
+                .map(product -> ProductDto.fromEntity(
+                        product,
+                        product.getCategoryId() != null ? categoryMap.get(product.getCategoryId()) : null,
+                        product.getSubCategoryId() != null ? subCategoryMap.get(product.getSubCategoryId()) : null
+                ))
+                .toList();
+    }
+
+    public List<ProductDto> getTodaySpecialProducts(int limit) {
+        List<Product> products = productRepository.findTodaySpecialProducts(limit);
+        Map<Long, String> categoryMap = getCategoryMap();
+        Map<Long, String> subCategoryMap = getSubCategoryMap();
+
+        return products.stream()
+                .map(product -> ProductDto.fromEntity(
+                        product,
+                        product.getCategoryId() != null ? categoryMap.get(product.getCategoryId()) : null,
+                        product.getSubCategoryId() != null ? subCategoryMap.get(product.getSubCategoryId()) : null
+                ))
+                .toList();
+    }
+
     private Map<Long, String> getCategoryMap() {
         Map<Long, String> categoryMap = categoryRepository.findAll().stream()
                 .collect(Collectors.toMap(Category::getId, Category::getName));
