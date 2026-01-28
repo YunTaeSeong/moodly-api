@@ -5,8 +5,8 @@ spring:
 
   data:
     redis:
+      host: moodly-redis
       port: 6379
-      host: localhost
 
   datasource:
     url: jdbc:mysql://moodly-product-db:3306/moodly_product?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Seoul&characterEncoding=utf8
