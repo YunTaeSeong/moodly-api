@@ -36,12 +36,26 @@ spring:
               filters:
                 - RewritePath=/PRODUCT/(?<segment>.*), /${segment}
 
+            - id: product-internal
+              uri: http://localhost:8083
+              predicates:
+                - Path=/internal/**
+              filters:
+                - RewritePath=/internal/(?<segment>.*), /internal/${segment}
+
             - id: cart
               uri: http://localhost:8084
               predicates:
                 - Path=/CART/**
               filters:
                 - RewritePath=/CART/(?<segment>.*), /${segment}
+
+            - id: order
+              uri: http://localhost:8085
+              predicates:
+                - Path=/ORDER/**
+              filters:
+                - RewritePath=/ORDER/(?<segment>.*), /${segment}
 
           globalcors:
             cors-configurations:
