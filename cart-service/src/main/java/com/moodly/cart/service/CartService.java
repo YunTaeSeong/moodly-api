@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -67,7 +66,8 @@ public class CartService {
 
     @Transactional
     public void updateQuantity(Long userId, Long cartId, Integer quantity) {
-        Cart cart = getFindById(cartId);
+        Cart cart = cartRepository.findById(cartId)
+                .orElseThrow(() -> new BaseException(GlobalErrorCode.CART_ITEM_NOT_FOUND));
 
         getNotEqualUserId(userId, cart);
 
@@ -81,7 +81,8 @@ public class CartService {
 
     @Transactional
     public void deleteCartItem(Long userId, Long cartId) {
-        Cart cart = getFindById(cartId);
+        Cart cart = cartRepository.findById(cartId)
+                .orElseThrow(() -> new BaseException(GlobalErrorCode.CART_ITEM_NOT_FOUND));
 
         getNotEqualUserId(userId, cart);
 
@@ -90,7 +91,8 @@ public class CartService {
 
     @Transactional
     public void updateChecked(Long userId, Long cartId, boolean checked) {
-        Cart cart = getFindById(cartId);
+        Cart cart = cartRepository.findById(cartId)
+                .orElseThrow(() -> new BaseException(GlobalErrorCode.CART_ITEM_NOT_FOUND));
 
         getNotEqualUserId(userId, cart);
 
@@ -116,10 +118,34 @@ public class CartService {
         cartRepository.deleteAll(carts);
     }
 
-    private Cart getFindById(Long cartId) {
+    @Transactional(readOnly = true)
+    public CartDto getCartById(Long cartId) {
         Cart cart = cartRepository.findById(cartId)
                 .orElseThrow(() -> new BaseException(GlobalErrorCode.CART_ITEM_NOT_FOUND));
-        return cart;
+        return CartDto.fromEntity(cart);
+    }
+
+    /**
+     * 주문 생성용 메소드 : cartIds에 해당하는 장바구니 항목을 상품 정보와 함께 조회
+     */
+    @Transactional(readOnly = true)
+    public List<CartItemDto> getCartItemsWithProductInfo(List<Long> cartIds) {
+        if (cartIds == null || cartIds.isEmpty()) {
+            return List.of();
+        }
+        List<Cart> carts = cartRepository.findAllById(cartIds);
+        return carts.stream()
+                .map(cart -> {
+                    CartDto cartDto = CartDto.fromEntity(cart);
+                    try {
+                        ProductResponse product = productClient.getProductById(cart.getProductId());
+                        return CartItemDto.fromCartDtoAndProduct(cartDto, product);
+                    } catch (Exception e) {
+                        log.warn("상품 정보 조회 실패: productId = {}", cart.getProductId(), e);
+                        return CartItemDto.fromCartDtoAndProduct(cartDto, null);
+                    }
+                })
+                .toList();
     }
 
     private static void getNotEqualUserId(Long userId, Cart cart) {

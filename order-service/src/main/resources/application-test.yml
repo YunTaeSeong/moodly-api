@@ -24,3 +24,6 @@ management:
   endpoint:
     health:
       show-details: always
+
+cart-service:
+  base_url: http://localhost:8084

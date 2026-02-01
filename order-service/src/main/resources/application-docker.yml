@@ -27,3 +27,6 @@ security:
   jwt:
     common:
       secret: ${JWT_SECRET}
+
+cart-service:
+  base_url: http://moodly-cart:8084

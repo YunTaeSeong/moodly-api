@@ -28,3 +28,5 @@ security:
     common:
       secret: ${JWT_SECRET}
 
+cart-service:
+  base_url: http://localhost:8084

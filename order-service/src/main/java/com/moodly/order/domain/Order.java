@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
         name = "orders",
         indexes = {
                 @Index(
-                        name = "idx_orders_user_date", columnList = "user_id, order_date"
+                        name = "idx_orders_user_date", columnList = "user_id, created_date"
                 ),
                 @Index(
                         name = "idx_orders_status", columnList = "status"
@@ -78,4 +78,32 @@ public class Order extends BaseEntity {
 
     @Column(name = "delivered_date")
     private LocalDateTime deliveredDate;
+
+    public static Order of(
+            String orderId,
+            Long userId,
+            BigDecimal totalAmount,
+            BigDecimal discountAmount,
+            BigDecimal shippingFee,
+            BigDecimal finalAmount,
+            Long couponId,
+            String deliveryAddress,
+            String customerName,
+            String customerPhoneNumber,
+            OrderStatus status
+    ) {
+        return Order.builder()
+                .orderId(orderId)
+                .userId(userId)
+                .totalAmount(totalAmount)
+                .discountAmount(discountAmount)
+                .shippingFee(shippingFee)
+                .finalAmount(finalAmount)
+                .couponId(couponId)
+                .deliveryAddress(deliveryAddress)
+                .customerName(customerName)
+                .customerPhoneNumber(customerPhoneNumber)
+                .status(status)
+                .build();
+    }
 }
