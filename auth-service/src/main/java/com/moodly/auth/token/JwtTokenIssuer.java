@@ -7,7 +7,6 @@ import com.moodly.auth.repository.RefreshTokenRepository;
 import com.moodly.common.exception.BaseException;
 import com.moodly.common.exception.GlobalErrorCode;
 import com.moodly.common.security.jwt.JwtProperties;
-import com.moodly.common.security.jwt.JwtTokenProvider;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;

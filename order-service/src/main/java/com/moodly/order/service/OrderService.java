@@ -127,9 +127,85 @@ public class OrderService {
     private static BigDecimal applyDiscount(BigDecimal price, int discountPercent) {
         if (price == null) throw new IllegalArgumentException("가격은 null 일 수 없습니다.");
         if (discountPercent <= 0) return price;
-        if (discountPercent > 100) throw new IllegalArgumentException("할인율은 0 ~ 100 입니다.");
+        if (discountPercent > 100) throw new IllegalArgumentException("할인율은 100을 넘을 수 없습니다.");
 
         BigDecimal rate = BigDecimal.valueOf(100 - discountPercent).divide(BigDecimal.valueOf(100), 4, RoundingMode.HALF_UP);
         return price.multiply(rate).setScale(2, RoundingMode.HALF_UP);
     }
+
+    /**
+     * 주문 단건 조회 (주문 내역 상세)
+     */
+    @Transactional(readOnly = true)
+    public OrderDto getOrder(Long userId, Long orderId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new BaseException(GlobalErrorCode.ORDER_NOT_FOUND));
+
+        if (!order.getUserId().equals(userId)) {
+            throw new BaseException(GlobalErrorCode.MISSING_AUTHORIZATION);
+        }
+
+        List<OrderItem> orderItems = orderItemRepository.findByOrderId(order.getId());
+        List<OrderItemDto> itemDto = orderItems.stream()
+                .map(OrderItemDto::fromEntity)
+                .toList();
+
+        return OrderDto.fromEntity(order, itemDto);
+    }
+
+    /**
+     * 주문 전체 조회 (최신순)
+     */
+    @Transactional(readOnly = true)
+    public List<OrderDto> getOrderAll(Long userId) {
+        List<Order> orders = orderRepository.findAllByUserIdOrderByCreatedDateDesc(userId);
+
+        if(orders == null || orders.isEmpty()) {
+            throw new BaseException(GlobalErrorCode.ORDER_NOT_FOUND);
+        }
+
+        return orders.stream()
+                .map(order -> {
+                    List<OrderItem> orderItems = orderItemRepository.findByOrderId(order.getId());
+                    List<OrderItemDto> itemDto = orderItems.stream()
+                            .map(OrderItemDto::fromEntity)
+                            .toList();
+                    return OrderDto.fromEntity(order, itemDto);
+                })
+                .toList();
+    }
+
+    /**
+     * 주문 단건 삭제 -> OrderItem 먼저 삭제 후 Order 삭제
+     */
+    @Transactional
+    public void getOrderSelectedDelete(Long userId, Long orderId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new BaseException(GlobalErrorCode.ORDER_NOT_FOUND));
+
+        if (!order.getUserId().equals(userId)) {
+            throw new BaseException(GlobalErrorCode.MISSING_AUTHORIZATION);
+        }
+
+        List<OrderItem> orderItems = orderItemRepository.findByOrderId(order.getId());
+        orderItemRepository.deleteAll(orderItems);
+
+        orderRepository.delete(order);
+    }
+
+    /**
+     * 주문 전체 삭제
+     */
+    @Transactional
+    public void deleteAllOrders(Long userId) {
+        List<Order> orders = orderRepository.findAllByUserIdOrderByCreatedDateDesc(userId);
+
+        orders.stream().forEach(order -> {
+            List<OrderItem> orderItems = orderItemRepository.findByOrderId(order.getId());
+            orderItemRepository.deleteAll(orderItems);
+        });
+
+        orderRepository.deleteAll(orders);
+    }
+
 }

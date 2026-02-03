@@ -30,6 +30,8 @@ public enum GlobalErrorCode implements ErrorCode {
     CART_NOT_FOUND(HttpStatus.NOT_FOUND, "CART_001", "CART_NOT_FOUND"),
 
     INVALID_QUANTITY(HttpStatus.BAD_REQUEST, "QUANTITY_001", "INVALID_QUANTITY"),
+
+    ORDER_NOT_FOUND(HttpStatus.NOT_FOUND, "ORDER_001", "ORDER_NOT_FOUND"),
     ;
 
     private final HttpStatus httpStatus;
