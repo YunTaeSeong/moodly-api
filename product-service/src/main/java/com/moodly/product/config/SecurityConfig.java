@@ -2,7 +2,6 @@ package com.moodly.product.config;
 
 import com.moodly.common.security.filter.JwtAuthenticationFilter;
 import com.moodly.common.security.jwt.JwtTokenProvider;
-import com.moodly.product.security.GatewayHeaderAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,6 +24,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
+    private final JwtTokenProvider jwtTokenProvider;
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
@@ -40,11 +41,11 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/product/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/category/**").permitAll()
 
-                        // 나머지 API는 로그인 후 접근
+                        // 나머지 API는 로그인 후 접근 (JWT)
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(
-                        new GatewayHeaderAuthenticationFilter(),
+                        new JwtAuthenticationFilter(jwtTokenProvider),
                         UsernamePasswordAuthenticationFilter.class
                 );
 

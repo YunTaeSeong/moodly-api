@@ -32,6 +32,9 @@ public enum GlobalErrorCode implements ErrorCode {
     INVALID_QUANTITY(HttpStatus.BAD_REQUEST, "QUANTITY_001", "INVALID_QUANTITY"),
 
     ORDER_NOT_FOUND(HttpStatus.NOT_FOUND, "ORDER_001", "ORDER_NOT_FOUND"),
+
+    WISHLIST_ALREADY_EXISTS(HttpStatus.CONFLICT, "WISHLIST_001", "WISHLIST_ALREADY_EXISTS"),
+    WISHLIST_NOT_EXISTS(HttpStatus.CONFLICT, "WISHLIST_002", "WISHLIST_NOT_EXISTS"),
     ;
 
     private final HttpStatus httpStatus;
