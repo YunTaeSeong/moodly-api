@@ -66,4 +66,12 @@ public class ProductInquiry extends BaseEntity {
     public void setContent(String content) {
         this.content = content;
     }
+
+    public void setReplyAdmin(Long replyId, String replyName, String reply) {
+        this.reply = reply;
+        this.replyDate = LocalDateTime.now();
+        this.replyId = replyId;
+        this.replyName = replyName;
+        this.status = ProductInquiryStatus.COMPLETED;
+    }
 }

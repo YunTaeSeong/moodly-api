@@ -15,4 +15,8 @@ public class AuthPrincipal {
     private final String email;
 
     private final List<String> roles;
+
+    public boolean isAdmin() {
+        return roles != null && roles.contains("ADMIN");
+    }
 }

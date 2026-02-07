@@ -2,6 +2,7 @@ package com.moodly.product.service;
 
 import com.moodly.common.exception.BaseException;
 import com.moodly.common.exception.GlobalErrorCode;
+import com.moodly.common.security.principal.AuthPrincipal;
 import com.moodly.product.domain.ProductInquiry;
 import com.moodly.product.dto.ProductInquiryDto;
 import com.moodly.product.enums.ProductInquiryStatus;
@@ -14,6 +15,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -22,6 +25,9 @@ public class ProductInquiryService {
     private final ProductInquiryRepository productInquiryRepository;
     private final ProductRepository productRepository;
 
+    // ----------------------
+    // USER
+    // ----------------------
     /**
      * 상품 문의 등록
      */
@@ -61,7 +67,6 @@ public class ProductInquiryService {
         }
 
         return ProductInquiryDto.fromEntity(inquiry);
-
     }
 
     /**
@@ -96,6 +101,11 @@ public class ProductInquiryService {
             throw new BaseException(GlobalErrorCode.MISSING_AUTHORIZATION);
         }
 
+        // 답변이 달리거나 답변 완료 상태면 수정 불가
+        if(productInquiry.getReply() != null || productInquiry.getStatus() == ProductInquiryStatus.COMPLETED) {
+            throw new BaseException(GlobalErrorCode.INQUIRY_ALREADY_REPLIED);
+        }
+
         productInquiry.setContent(content);
 
         return ProductInquiryDto.fromEntity(productInquiry);
@@ -112,6 +122,91 @@ public class ProductInquiryService {
         if(!productInquiry.getUserId().equals(userId)) {
             throw new BaseException(GlobalErrorCode.MISSING_AUTHORIZATION);
         }
+
+        // 답변이 달리거나 답변 완료 상태면 삭제 불가
+        if(productInquiry.getReply() != null || productInquiry.getStatus() == ProductInquiryStatus.COMPLETED) {
+            throw new BaseException(GlobalErrorCode.INQUIRY_ALREADY_REPLIED);
+        }
+
+        productInquiryRepository.delete(productInquiry);
+    }
+
+
+
+    // ----------------------
+    // ADMIN
+    // ----------------------
+    private void isAdmin(AuthPrincipal principal) {
+        if(principal == null || !principal.isAdmin()) {
+            throw new BaseException(GlobalErrorCode.MISSING_AUTHORIZATION);
+        }
+    }
+
+    /**
+     * 관리자 전체 문의 목록
+     */
+    @Transactional(readOnly = true)
+    public Page<ProductInquiryDto> getAllAdminProductInquiry(
+            AuthPrincipal principal,
+            Long productId,
+            ProductInquiryStatus status,
+            String content,
+            Pageable pageable
+    ) {
+        isAdmin(principal);
+
+        return productInquiryRepository.searchAllAdminInquiries(productId, status, content, pageable)
+                .map(ProductInquiryDto::fromEntity);
+    }
+
+    /**
+     * 관리자 문의 답변 완료 : 상태(COMPLETED)
+     */
+    @Transactional
+    public ProductInquiryDto getAdminReply(
+            AuthPrincipal principal,
+            Long productInquiryId,
+            String reply
+    ) {
+        isAdmin(principal);
+
+        ProductInquiry productInquiry = productInquiryRepository.findById(productInquiryId)
+                .orElseThrow(() -> new BaseException(GlobalErrorCode.INQUIRY_ALREADY_REPLIED));
+
+        productInquiry.setReplyAdmin(principal.getUserId(), "ADMIN", reply);
+
+        return ProductInquiryDto.fromEntity(productInquiry);
+    }
+
+    /**
+     * 관리자 문의 : 수정
+     */
+    @Transactional
+    public ProductInquiryDto getAdminUpdate(
+            AuthPrincipal principal,
+            Long productInquiryId,
+            String content
+    ) {
+        isAdmin(principal);
+
+        ProductInquiry productInquiry = productInquiryRepository.findById(productInquiryId)
+                .orElseThrow(() -> new BaseException(GlobalErrorCode.INQUIRY_ALREADY_REPLIED));
+
+        productInquiry.setContent(content);
+        return ProductInquiryDto.fromEntity(productInquiry);
+    }
+
+    /**
+     * 관리자 문의 : 삭제
+     */
+    @Transactional
+    public void getAdminDelete(
+            AuthPrincipal principal,
+            Long productInquiryId
+    ){
+        isAdmin(principal);
+        ProductInquiry productInquiry = productInquiryRepository.findById(productInquiryId)
+                .orElseThrow(() -> new BaseException(GlobalErrorCode.INQUIRY_ALREADY_REPLIED));
 
         productInquiryRepository.delete(productInquiry);
     }
