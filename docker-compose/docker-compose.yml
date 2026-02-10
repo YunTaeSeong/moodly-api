@@ -195,6 +195,42 @@ services:
       file: common-config.yml
       service: network-deploy-service
 
+  moodly-notification-db:
+    container_name: moodly-notification-db
+    ports:
+      - "3315:3306"
+    environment:
+      MYSQL_DATABASE: moodly_notification
+    volumes:
+      - moodly_moodly-notification-db:/var/lib/mysql
+    extends:
+      file: common-config.yml
+      service: microservice-db-config
+
+  moodly-notification:
+    profiles: ["app"]
+    build:
+      context: ..
+      dockerfile: notification-service/Dockerfile
+    image: tsyundeveloper/moodly-notification:latest
+    container_name: moodly-notification
+    expose:
+      - "8086"
+    environment:
+      SPRING_APPLICATION_NAME: notification-service
+      SPRING_PROFILES_ACTIVE: docker
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
+    depends_on:
+      moodly-notification-db:
+        condition: service_healthy
+      moodly-redis:
+        condition: service_started
+    extends:
+      file: common-config.yml
+      service: network-deploy-service
+
   moodly-gateway:
     profiles: ["app"]
     build:
@@ -218,6 +254,8 @@ services:
         condition: service_started
       moodly-order:
         condition: service_started
+      moodly-notification:
+        condition: service_started
     extends:
       file: common-config.yml
       service: network-deploy-service
@@ -232,3 +270,4 @@ volumes:
   moodly_moodly-product-db: {}
   moodly_moodly-cart-db: {}
   moodly_moodly-order-db: {}
+  moodly_moodly-notification-db: {}
