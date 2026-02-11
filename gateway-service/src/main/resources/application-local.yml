@@ -57,6 +57,13 @@ spring:
               filters:
                 - RewritePath=/ORDER/(?<segment>.*), /${segment}
 
+            - id: notification
+              uri: http://localhost:8086
+              predicates:
+                - Path=/NOTIFICATION/**
+              filters:
+                - RewritePath=/NOTIFICATION/(?<segment>.*), /${segment}
+
           globalcors:
             cors-configurations:
               '[/**]':
