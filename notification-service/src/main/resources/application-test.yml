@@ -1,6 +1,18 @@
 spring:
+  config:
+    activate:
+      on-profile: test
+
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
+  kafka:
+    enabled: true
+
   datasource:
-    url: jdbc:h2:mem:testdb_product;MODE=MySQL
+    url: jdbc:h2:mem:testdb_notification;MODE=MySQL
     driver-class-name: org.h2.Driver
     username: sa
     password:
@@ -8,7 +20,6 @@ spring:
     database-platform: org.hibernate.dialect.MySQLDialect
     hibernate:
       ddl-auto: create-drop
-    defer-datasource-initialization: true
     open-in-view: false
     show-sql: true
     properties:
@@ -28,8 +39,10 @@ security:
   jwt:
     common:
       secret: "bW9vZGx5LXRlc3Qtand0LXNlY3JldC0yMDI2" # 테스트용 secret
-      access-token-ttl-seconds: 900
-      refresh-token-ttl-seconds: 604800
       issuer: moodly-auth
       audience: moodly-api
       roles-claim: roles
+
+user:
+  service:
+    url: http://localhost:8082

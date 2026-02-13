@@ -1,4 +1,16 @@
 spring:
+  config:
+    activate:
+      on-profile: test
+
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
+  kafka:
+    enabled: true
+
   datasource:
     url: jdbc:h2:mem:testdb_product;MODE=MySQL
     driver-class-name: org.h2.Driver

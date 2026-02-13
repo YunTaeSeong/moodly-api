@@ -37,6 +37,8 @@ public enum GlobalErrorCode implements ErrorCode {
 
     WISHLIST_ALREADY_EXISTS(HttpStatus.CONFLICT, "WISHLIST_001", "WISHLIST_ALREADY_EXISTS"),
     WISHLIST_NOT_EXISTS(HttpStatus.CONFLICT, "WISHLIST_002", "WISHLIST_NOT_EXISTS"),
+
+    NOTIFICATION_NOT_FOUND(HttpStatus.NOT_FOUND, "NOTIFICATION_001", "NOTIFICATION_NOT_FOUND"),
     ;
 
     private final HttpStatus httpStatus;

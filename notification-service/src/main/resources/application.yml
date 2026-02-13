@@ -4,19 +4,34 @@ server:
 spring:
   application:
     name: notification-service
-  sql:
-    init:
-      mode: always
+
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+    deserialization:
+      fail-on-unknown-properties: false
+
   jpa:
     database-platform: org.hibernate.dialect.MySQLDialect
     hibernate:
-      ddl-auto: update
-    defer-datasource-initialization: true
+      ddl-auto: validate
     open-in-view: false
     show-sql: true
     properties:
       hibernate:
         format_sql: true
+
+  kafka:
+    enabled: ${KAFKA_ENABLED:true}
+    consumer:
+      auto-startup: ${KAFKA_ENABLED:true}
+      group-id: notification-service
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "com.moodly.product.event,com.moodly.notification.event"
+        spring.json.use.type.headers: false
+        spring.json.value.default.type: "com.moodly.notification.event.InquiryEvent"
 
 security:
   jwt:
@@ -24,3 +39,16 @@ security:
       issuer: moodly-auth
       audience: moodly-api
       roles-claim: roles
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: always
+
+user:
+  service:
+    url: ${USER_SERVICE_URL:http://localhost:8082}

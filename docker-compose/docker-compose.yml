@@ -8,6 +8,41 @@ services:
       file: common-config.yml
       service: network-deploy-service
 
+  moodly-zookeeper:
+    image: confluentinc/cp-zookeeper:7.5.0
+    container_name: moodly-zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - "2181:2181"
+    extends:
+      file: common-config.yml
+      service: network-deploy-service
+
+  moodly-kafka:
+    image: confluentinc/cp-kafka:7.5.0
+    container_name: moodly-kafka
+    depends_on:
+      - moodly-zookeeper
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: moodly-zookeeper:2181
+
+      # 내부(컨테이너간) / 외부(호스트) 접속 분리
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:29092,PLAINTEXT_HOST://0.0.0.0:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://moodly-kafka:29092,PLAINTEXT_HOST://localhost:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+
+      # 단일 브로커면 1
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    extends:
+      file: common-config.yml
+      service: network-deploy-service
+
   moodly-auth-db:
     container_name: moodly-auth-db
     ports:
@@ -27,8 +62,6 @@ services:
       dockerfile: auth-service/Dockerfile
     image: tsyundeveloper/moodly-auth:latest
     container_name: moodly-auth
-    # ports:
-    #   - "8081:8081"
     expose:
       - "8081"
     environment:
@@ -65,8 +98,6 @@ services:
       dockerfile: user-service/Dockerfile
     image: tsyundeveloper/moodly-user:latest
     container_name: moodly-user
-    # ports:
-    #   - "8082:8082"
     expose:
       - "8082"
     environment:
@@ -82,6 +113,8 @@ services:
       moodly-user-db:
         condition: service_healthy
       moodly-redis:
+        condition: service_started
+      moodly-kafka:
         condition: service_started
     extends:
       file: common-config.yml
@@ -106,8 +139,6 @@ services:
       dockerfile: product-service/Dockerfile
     image: tsyundeveloper/moodly-product:latest
     container_name: moodly-product
-    # ports:
-    #   - "8083:8083"
     expose:
       - "8083"
     environment:
@@ -116,10 +147,14 @@ services:
       DB_USERNAME: ${DB_USERNAME}
       DB_PASSWORD: ${DB_PASSWORD}
       JWT_SECRET: ${JWT_SECRET}
+      KAFKA_ENABLED: ${KAFKA_ENABLED}
+      KAFKA_BOOTSTRAP_SERVERS: moodly-kafka:29092
     depends_on:
       moodly-product-db:
         condition: service_healthy
       moodly-redis:
+        condition: service_started
+      moodly-kafka:
         condition: service_started
     extends:
       file: common-config.yml
@@ -156,6 +191,8 @@ services:
         condition: service_healthy
       moodly-redis:
         condition: service_started
+      moodly-kafka:
+        condition: service_started
     extends:
       file: common-config.yml
       service: network-deploy-service
@@ -191,6 +228,8 @@ services:
         condition: service_healthy
       moodly-redis:
         condition: service_started
+      moodly-kafka:
+        condition: service_started
     extends:
       file: common-config.yml
       service: network-deploy-service
@@ -222,10 +261,22 @@ services:
       DB_USERNAME: ${DB_USERNAME}
       DB_PASSWORD: ${DB_PASSWORD}
       JWT_SECRET: ${JWT_SECRET}
+
+      # Kafka (컨테이너 내부 주소)
+      KAFKA_ENABLED: ${KAFKA_ENABLED}
+      KAFKA_BOOTSTRAP_SERVERS: moodly-kafka:29092
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: moodly-kafka:29092
+
+      # user-service 호출이 필요할 때 대비
+      USER_SERVICE_URL: http://moodly-user:8082
     depends_on:
       moodly-notification-db:
         condition: service_healthy
       moodly-redis:
+        condition: service_started
+      moodly-kafka:
+        condition: service_started
+      moodly-user:
         condition: service_started
     extends:
       file: common-config.yml
@@ -238,7 +289,6 @@ services:
       dockerfile: gateway-service/Dockerfile
     image: tsyundeveloper/moodly-gateway:latest
     container_name: moodly-gateway
-    # 외부 진입점은 Gateway만
     ports:
       - "8072:8072"
     environment:
