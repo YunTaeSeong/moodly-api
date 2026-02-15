@@ -2,9 +2,11 @@ package com.moodly.product.service;
 
 import com.moodly.common.exception.BaseException;
 import com.moodly.common.security.principal.AuthPrincipal;
+import com.moodly.product.domain.Product;
 import com.moodly.product.domain.ProductInquiry;
 import com.moodly.product.dto.ProductInquiryDto;
 import com.moodly.product.enums.ProductInquiryStatus;
+import com.moodly.product.event.InquiryEvent;
 import com.moodly.product.repository.ProductInquiryRepository;
 import com.moodly.product.repository.ProductRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -34,45 +36,45 @@ class ProductInquiryServiceTest {
     @Mock
     private ProductRepository productRepository;
 
+    @Mock
+    private InquiryEventService inquiryEventService;
+
     // --------------------------------------------
     // USER
     // --------------------------------------------
     @Test
-    @DisplayName("상품 문의 등록 : 성공")
+    @DisplayName("상품 문의 등록 : 성공 (+ 이벤트 발행)")
     void 상품_문의_등록_성공() {
-        // given
         Long userId = 1L;
         Long productId = 2L;
         String content = "문의합니다";
 
         when(productRepository.existsById(productId)).thenReturn(true);
 
+        Product product = mock(Product.class);
+        when(product.getName()).thenReturn("테스트상품");
+        when(productRepository.findById(productId)).thenReturn(Optional.of(product));
+
         ProductInquiry saved = mock(ProductInquiry.class);
         when(saved.getId()).thenReturn(1L);
-        when(saved.getUserId()).thenReturn(userId);
-        when(saved.getProductId()).thenReturn(productId);
-        when(saved.getContent()).thenReturn(content);
-
         when(productInquiryRepository.save(any(ProductInquiry.class))).thenReturn(saved);
 
-        // when
         ProductInquiryDto result = productInquiryService.createProductInquiry(userId, productId, content);
 
-        // then
         assertNotNull(result);
-        verify(productRepository, times(1)).existsById(productId);
 
-        ArgumentCaptor<ProductInquiry> captor = ArgumentCaptor.forClass(ProductInquiry.class);
-        verify(productInquiryRepository, times(1)).save(captor.capture());
-        ProductInquiry captured = captor.getValue();
+        ArgumentCaptor<InquiryEvent> captor = ArgumentCaptor.forClass(InquiryEvent.class);
+        verify(inquiryEventService, times(1)).publishEvent(captor.capture());
 
-        assertEquals(productId, captured.getProductId());
-        assertEquals(userId, captured.getUserId());
-        assertEquals(content, captured.getContent());
+        InquiryEvent event = captor.getValue();
+        assertEquals(1L, event.getInquiryId());
+        assertEquals(productId, event.getProductId());
+        assertEquals("테스트상품", event.getProductName());
+        assertEquals(userId, event.getAuthorUserId());
     }
 
     @Test
-    @DisplayName("상품 문의 등록 : 실패(상품 찾을 수 없음)")
+    @DisplayName("상품 문의 등록 : 실패(상품 찾을 수 없음) (+ 이벤트 발행 안 함)")
     void 상품_문의_등록_실패_상품_찾을_수_없음() {
         // given
         Long userId = 1L;
@@ -84,8 +86,12 @@ class ProductInquiryServiceTest {
         assertThrows(BaseException.class,
                 () -> productInquiryService.createProductInquiry(userId, productId, "문의"));
 
+        // then
         verify(productRepository, times(1)).existsById(productId);
+
         verify(productInquiryRepository, never()).save(any());
+        verify(productRepository, never()).findById(any());
+        verify(inquiryEventService, never()).publishEvent(any());
     }
 
 
@@ -324,33 +330,63 @@ class ProductInquiryServiceTest {
     }
 
     @Test
-    @DisplayName("관리자 문의 답변 : 성공")
+    @DisplayName("관리자 문의 답변 : 성공 (+ Kafka 이벤트 발행)")
     void 관리자_문의_답변_성공() {
+        // given
         AuthPrincipal admin = adminPrincipalWithId(99L);
         Long inquiryId = 1L;
+        String reply = "답변합니다";
 
         ProductInquiry inquiry = mock(ProductInquiry.class);
-        when(productInquiryRepository.findById(inquiryId))
-                .thenReturn(Optional.of(inquiry));
+        when(inquiry.getId()).thenReturn(inquiryId);
+        when(inquiry.getProductId()).thenReturn(2L);
+        when(inquiry.getUserId()).thenReturn(10L);
 
-        ProductInquiryDto result = productInquiryService.getAdminReply(admin, inquiryId, "답변합니다");
+        when(productInquiryRepository.findById(inquiryId)).thenReturn(Optional.of(inquiry));
 
+        Product product = mock(Product.class);
+        when(product.getName()).thenReturn("테스트상품");
+        when(productRepository.findById(2L)).thenReturn(Optional.of(product));
+
+        // when
+        ProductInquiryDto result = productInquiryService.getAdminReply(admin, inquiryId, reply);
+
+        // then
         assertNotNull(result);
-        verify(inquiry).setReplyAdmin(99L, "ADMIN", "답변합니다");
+        verify(inquiry).setReplyAdmin(99L, "ADMIN", reply);
+
+        // Kafka 이벤트 발행 검증
+        ArgumentCaptor<InquiryEvent> eventCaptor = ArgumentCaptor.forClass(InquiryEvent.class);
+        verify(inquiryEventService, times(1)).publishEvent(eventCaptor.capture());
+
+        InquiryEvent event = eventCaptor.getValue();
+        assertEquals("INQUIRY_REPLIED", event.getType());
+        assertEquals(inquiryId, event.getInquiryId());
+        assertEquals(2L, event.getProductId());
+        assertEquals("테스트상품", event.getProductName());
+        assertEquals(10L, event.getTargetUserId()); // 답변 알림 대상 = 문의 작성자
+        String expectedPreview = reply.length() > 50 ? reply.substring(0, 50) + "..." : reply;
+        assertEquals(expectedPreview, event.getReplyPreview());
     }
 
     @Test
     @DisplayName("관리자 문의 답변 : 실패(관리자 아님)")
     void 관리자_문의_답변_실패() {
+        // given
         AuthPrincipal user = userPrincipal();
 
+        // when & then
         assertThrows(
                 BaseException.class,
                 () -> productInquiryService.getAdminReply(
                         user, 1L, "reply"
-        ));
+                )
+        );
 
+        // then
         verify(productInquiryRepository, never()).findById(any());
+        verify(inquiryEventService, never()).publishEvent(any());
+        verify(inquiryEventService, never()).publishEvent(any());
     }
 
     @Test

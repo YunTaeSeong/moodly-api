@@ -10,13 +10,13 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class InquiryEvent {
-    private String eventId;
+    private String eventId; // 이벤트 UUID, 멱등 처리
     private Long inquiryId;
     private Long productId;
     private String productName;
-    private Long authorUserId;
-    private Long targetUserId;
-    private String type;
+    private Long authorUserId; // 문의 작성자 Id
+    private Long targetUserId; // 문의 수신자 Id
+    private String type; // INQUIRY_CREATED, INQUIRY_REPLIED
     private String replyPreview;
 
     public static InquiryEvent inquiryCreated(Long inquiryId, Long productId, String productName, Long authorUserId) {

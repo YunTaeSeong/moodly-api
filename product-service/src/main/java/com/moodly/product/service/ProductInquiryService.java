@@ -3,22 +3,19 @@ package com.moodly.product.service;
 import com.moodly.common.exception.BaseException;
 import com.moodly.common.exception.GlobalErrorCode;
 import com.moodly.common.security.principal.AuthPrincipal;
+import com.moodly.product.domain.Product;
 import com.moodly.product.domain.ProductInquiry;
 import com.moodly.product.dto.ProductInquiryDto;
 import com.moodly.product.enums.ProductInquiryStatus;
 import com.moodly.product.event.InquiryEvent;
 import com.moodly.product.repository.ProductInquiryRepository;
 import com.moodly.product.repository.ProductRepository;
-import com.moodly.product.service.InquiryEventService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -28,8 +25,7 @@ public class ProductInquiryService {
     private final ProductInquiryRepository productInquiryRepository;
     private final ProductRepository productRepository;
     
-    @Autowired(required = false)
-    private InquiryEventService inquiryEventService;
+    private final InquiryEventService inquiryEventService;
 
     // ----------------------
     // USER
@@ -54,7 +50,7 @@ public class ProductInquiryService {
 
         // Kafka 이벤트 발행: 문의 생성 → 관리자에게 알림
         if (inquiryEventService != null) {
-            com.moodly.product.domain.Product product = productRepository.findById(productId).orElse(null);
+            Product product = productRepository.findById(productId).orElse(null);
             String productName = product != null ? product.getName() : "상품";
             InquiryEvent event = InquiryEvent.inquiryCreated(
                     save.getId(),
@@ -196,7 +192,7 @@ public class ProductInquiryService {
 
         // Kafka 이벤트 발행: 답변 등록 → 문의 작성자에게 알림
         if (inquiryEventService != null) {
-            com.moodly.product.domain.Product product = productRepository.findById(productInquiry.getProductId()).orElse(null);
+            Product product = productRepository.findById(productInquiry.getProductId()).orElse(null);
             String productName = product != null ? product.getName() : "상품";
             String replyPreview = reply.length() > 50 ? reply.substring(0, 50) + "..." : reply;
             InquiryEvent event = InquiryEvent.inquiryReplied(
