@@ -4,7 +4,6 @@ import com.moodly.common.exception.BaseException;
 import com.moodly.common.exception.GlobalErrorCode;
 import com.moodly.notification.domain.Notification;
 import com.moodly.notification.domain.NotificationType;
-import com.moodly.notification.dto.NotificationDto;
 import com.moodly.notification.repository.NotificationRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +19,9 @@ public class NotificationService {
 
     private final NotificationRepository notificationRepository;
 
+    /**
+     * 알림 저장
+     */
     @Transactional
     public Notification save(Long userId, String eventId, NotificationType type, String title, String message, String link) {
         log.info("[NotificationService] 알림 저장 시도: userId={}, eventId={}, type={}, title={}", userId, eventId, type, title);
@@ -51,6 +53,9 @@ public class NotificationService {
         }
     }
 
+    /**
+     * 모든 알림 조회
+     */
     @Transactional(readOnly = true)
     public Page<Notification> getNotifications(Long userId, Pageable pageable) {
         log.info("[NotificationService] 알림 조회: userId={}, page={}, size={}", userId, pageable.getPageNumber(), pageable.getPageSize());
@@ -59,6 +64,9 @@ public class NotificationService {
         return result;
     }
 
+    /**
+     * 읽지 않은 알림 조회
+     */
     @Transactional(readOnly = true)
     public long getUnreadCount(Long userId) {
         long count = notificationRepository.countUnreadByUserId(userId);
@@ -66,6 +74,9 @@ public class NotificationService {
         return count;
     }
 
+    /**
+     * 읽은 알림 조회(개수)
+     */
     @Transactional
     public void markAsRead(Long userId, Long notificationId) {
         Notification notification = notificationRepository.findById(notificationId)
@@ -77,14 +88,17 @@ public class NotificationService {
         notificationRepository.save(notification);
     }
 
+    /**
+     * 알림 중 읽지 않은 것만 전부 읽음 처리
+     */
     @Transactional
     public void markAllAsRead(Long userId) {
         notificationRepository.findByUserIdOrderByCreatedAtDesc(userId, Pageable.unpaged())
                 .getContent()
                 .stream()
-                .filter(n -> !n.getIsRead())
+                .filter(n -> Boolean.FALSE.equals(n.getIsRead())) // 안 읽은 알림: false
                 .forEach(n -> {
-                    n.setIsRead(true);
+                    n.setIsRead(true); // 읽음 처림: true
                     notificationRepository.save(n);
                 });
     }

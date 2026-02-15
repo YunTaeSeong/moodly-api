@@ -55,23 +55,4 @@ public class Notification {
         }
     }
 
-    public static Notification of(
-            Long userId,
-            String eventId,
-            NotificationType type,
-            String title,
-            String notificationMessage,
-            String link,
-            Boolean isRead
-    ) {
-        return Notification.builder()
-                .userId(userId)
-                .eventId(eventId)
-                .notificationType(type)
-                .title(title)
-                .notificationMessage(notificationMessage)
-                .link(link)
-                .isRead(isRead)
-                .build();
-    }
 }

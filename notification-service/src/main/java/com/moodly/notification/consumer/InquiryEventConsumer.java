@@ -2,7 +2,6 @@ package com.moodly.notification.consumer;
 
 import com.moodly.notification.domain.Notification;
 import com.moodly.notification.domain.NotificationType;
-import com.moodly.notification.dto.NotificationDto;
 import com.moodly.notification.event.InquiryEvent;
 import com.moodly.notification.service.NotificationService;
 import com.moodly.notification.service.SseService;
@@ -38,6 +37,7 @@ public class InquiryEventConsumer {
         log.info("[Kafka] Consumer가 활성화되었습니다. inquiry-events 토픽을 구독합니다.");
     }
 
+    //특정 토픽을 구독하고, 메시지가 오면 자동으로 메서드를 실행
     @KafkaListener(topics = "inquiry-events", groupId = "notification-service", containerFactory = "kafkaListenerContainerFactory")
     public void handleInquiryEvent(InquiryEvent event) {
         log.info("[Kafka] ===== 이벤트 수신 시작 =====");
