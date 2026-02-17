@@ -22,6 +22,7 @@ public class NotificationApiController {
     private final NotificationService notificationService;
     private final SseService sseService;
 
+    // produces = MediaType.TEXT_EVENT_STREAM_VALUE 설정해야 브라우저 SSE 인식, 없으면 일반 HTTP 응답으로 종료
     @GetMapping(value = "/sse", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public SseEmitter connectSse(@RequestParam Long userId) {
         log.info("[SSE] 연결 요청: userId={}", userId);

@@ -21,20 +21,24 @@ public class SseService {
     private final ObjectMapper objectMapper;
     private static final long DEFAULT_TIMEOUT = 60 * 60 * 1000L; // 1시간
 
+    // lifecycle
     public SseEmitter addEmitter(Long userId) {
         String emitterId = userId + "_" + System.currentTimeMillis();
         SseEmitter emitter = new SseEmitter(DEFAULT_TIMEOUT);
-        
+
+        // 클라이언트 정상 종료 시 호출
         emitter.onCompletion(() -> {
             log.info("[SSE] Emitter 완료: emitterId={}", emitterId);
             emitterRepository.deleteById(emitterId);
         });
-        
+
+        // DEFAULT_TIMEOUT -> 1시간 지나면 호출
         emitter.onTimeout(() -> {
             log.info("[SSE] Emitter 타임아웃: emitterId={}", emitterId);
             emitterRepository.deleteById(emitterId);
         });
-        
+
+        // 네트워크 끊김 / send 실패 / IO 오류 시 호출
         emitter.onError((ex) -> {
             log.error("[SSE] Emitter 오류: emitterId={}", emitterId, ex);
             emitterRepository.deleteById(emitterId);
@@ -79,6 +83,7 @@ public class SseService {
     }
 
     @Scheduled(fixedRate = 30000) // 30초마다
+    // SSE 연결을 끊기지 않게 유지하기 위한 heartbeat
     public void sendHeartbeat() {
         // 모든 emitter에 heartbeat 전송
         emitterRepository.findAllEmitterStartWithById("").forEach((emitterId, emitter) -> {
