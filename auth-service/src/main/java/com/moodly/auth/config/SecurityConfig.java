@@ -32,7 +32,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/login", "/auth/refresh", "/auth/logout").permitAll()
+                        .requestMatchers("/auth/login", "/auth/kakao/login", "/auth/refresh", "/auth/logout").permitAll()
                         .requestMatchers("/auth/**").authenticated()
                         .anyRequest().permitAll()
                 )

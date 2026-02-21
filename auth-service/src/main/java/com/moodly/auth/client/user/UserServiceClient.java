@@ -2,6 +2,8 @@ package com.moodly.auth.client.user;
 
 import com.moodly.auth.client.user.dto.CredentialRequest;
 import com.moodly.auth.client.user.dto.CredentialVerifyResponse;
+import com.moodly.auth.client.user.dto.KakaoUserCreateRequest;
+import com.moodly.auth.client.user.dto.KakaoUserResponse;
 import jakarta.validation.Valid;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,4 +27,10 @@ public interface UserServiceClient {
 
     @GetMapping("/internal/user/{userId}/roles")
     List<String> getRoles(@PathVariable("userId") Long userId);
+
+    @PostMapping("/internal/kakao/user")
+    KakaoUserResponse findOrCreateKakaoUser(
+            @Valid
+            @RequestBody KakaoUserCreateRequest request
+    );
 }

@@ -25,3 +25,8 @@ security:
 
 user-service:
   url: http://moodly-user:8082
+
+kakao:
+  client-id: ${KAKAO_CLIENT_ID}
+  client-secret: ${KAKAO_CLIENT_SECRET}
+  redirect-uri: ${KAKAO_REDIRECT_URI}

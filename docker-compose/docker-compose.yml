@@ -72,6 +72,9 @@ services:
       JWT_ACCESS_TOKEN: ${JWT_ACCESS_TOKEN}
       JWT_REFRESH_TOKEN: ${JWT_REFRESH_TOKEN}
       JWT_SECRET: ${JWT_SECRET}
+      KAKAO_CLIENT_ID: ${KAKAO_CLIENT_ID}
+      KAKAO_CLIENT_SECRET: ${KAKAO_CLIENT_SECRET}
+      KAKAO_REDIRECT_URI: ${KAKAO_REDIRECT_URI}
     depends_on:
       moodly-auth-db:
         condition: service_healthy
