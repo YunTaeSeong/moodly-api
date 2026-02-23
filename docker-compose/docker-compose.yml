@@ -285,6 +285,36 @@ services:
       file: common-config.yml
       service: network-deploy-service
 
+  moodly-coupon-db:
+    container_name: moodly-coupon-db
+    ports:
+      - "3316:3306"
+    environment:
+      MYSQL_DATABASE: moodly_coupon
+    volumes:
+      - moodly_moodly-coupon-db:/var/lib/mysql
+    extends:
+      file: common-config.yml
+      service: microservice-db-config
+
+  moodly-coupon:
+    profiles: ["app"]
+    build:
+      context: ..
+      dockerfile: coupon-service/Dockerfile
+    image: tsyundeveloper/moodly-coupon:latest
+    container_name: moodly-coupon
+    depends_on:
+      moodly-coupon-db:
+        condition: service_healthy
+      moodly-redis:
+        condition: service_started
+      moodly-kafka:
+        condition: service_started
+    extends:
+      file: common-config.yml
+      service: network-deploy-service
+
   moodly-gateway:
     profiles: ["app"]
     build:
@@ -324,3 +354,4 @@ volumes:
   moodly_moodly-cart-db: {}
   moodly_moodly-order-db: {}
   moodly_moodly-notification-db: {}
+  moodly_moodly-coupon-db: {}
