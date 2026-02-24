@@ -1,0 +1,105 @@
+spring:
+  config:
+    activate:
+      on-profile: docker
+  cloud:
+    gateway:
+      server:
+        webflux:
+          routes:
+            - id: auth
+              uri: http://moodly-auth:8081
+              predicates:
+                - Path=/AUTH/**
+              filters:
+                - RewritePath=/AUTH/(?<segment>.*), /$\{segment}
+
+            - id: user
+              uri: http://moodly-user:8082
+              predicates:
+                - Path=/USER/**
+              filters:
+                - RewritePath=/USER/(?<segment>.*), /$\{segment}
+
+            - id: user-internal
+              uri: http://moodly-user:8082
+              predicates:
+                - Path=/internal/**
+              filters:
+                - RewritePath=/internal/(?<segment>.*), /internal/${segment}
+
+            - id: product
+              uri: http://moodly-product:8083
+              predicates:
+                - Path=/PRODUCT/**
+              filters:
+                - RewritePath=/PRODUCT/(?<segment>.*), /$\{segment}
+
+            - id: product-internal
+              uri: http://moodly-product:8083
+              predicates:
+                - Path=/internal/**
+              filters:
+                - RewritePath=/internal/(?<segment>.*), /internal/${segment}
+
+            - id: cart
+              uri: http://moodly-cart:8084
+              predicates:
+                - Path=/CART/**
+              filters:
+                - RewritePath=/CART/(?<segment>.*), /${segment}
+
+            - id: order
+              uri: http://moodly-order:8085
+              predicates:
+                - Path=/ORDER/**
+              filters:
+                - RewritePath=/ORDER/(?<segment>.*), /${segment}
+
+            - id: notification
+              uri: http://moodly-notification:8086
+              predicates:
+                - Path=/NOTIFICATION/**
+              filters:
+                - RewritePath=/NOTIFICATION/(?<segment>.*), /${segment}
+
+            - id: coupon
+              uri: http://moodly-coupon:8087
+              predicates:
+                - Path=/COUPON/**
+              filters:
+                - RewritePath=/COUPON/(?<segment>.*), /${segment}
+
+          globalcors:
+            cors-configurations:
+              '[/**]':
+                allowed-origins:
+                  - "http://localhost:3000"
+                allowed-methods:
+                  - GET
+                  - POST
+                  - PUT
+                  - PATCH
+                  - DELETE
+                  - OPTIONS
+                allowed-headers: "*"
+                allow-credentials: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info
+  endpoint:
+    gateway:
+      access: unrestricted
+    health:
+      show-details: never
+  info:
+    env:
+      enabled: false
+
+security:
+  jwt:
+    common:
+      secret: ${JWT_SECRET}
