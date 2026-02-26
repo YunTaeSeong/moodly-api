@@ -58,6 +58,17 @@ public class UserCoupon {
     private String orderId;
 
     // == 비즈니스 검증 로직 == //
+    // 발행
+    public static UserCoupon issue(Long userId, Long couponId, String orderId, LocalDateTime expiredAt) {
+        return UserCoupon.builder()
+                .userId(userId)
+                .couponId(couponId)
+                .orderId(orderId)
+                .status(UserCouponStatus.ISSUED)
+                .receivedAt(LocalDateTime.now())
+                .expiredAt(expiredAt)
+                .build();
+    }
 
     // 쿠폰 사용
     public void use(String orderId) {
@@ -77,8 +88,8 @@ public class UserCoupon {
         this.orderId = orderId;
     }
 
-    // 취소 시 쿠폰 복구
-    public void restore() {
+    // 취소
+    public void cancel() {
         if (this.status != UserCouponStatus.USED) {
             throw new BaseException(GlobalErrorCode.COUPON_CANCEL_INVALID);
         }

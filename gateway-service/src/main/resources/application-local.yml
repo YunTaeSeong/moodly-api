@@ -71,6 +71,13 @@ spring:
               filters:
                 - RewritePath=/COUPON/(?<segment>.*), /${segment}
 
+            - id: coupon-internal
+              uri: http://localhost:8087
+              predicates:
+                - Path=/internal/**
+              filters:
+                - RewritePath=/internal/(?<segment>.*), /internal/${segment}
+
           globalcors:
             cors-configurations:
               '[/**]':

@@ -51,6 +51,9 @@ public class Coupon extends BaseEntity {
 
     private LocalDateTime validEndDate;
 
+    @Column(nullable = false, name = "valid_days")
+    private Integer validDays;
+
     private Integer totalQuantity;
 
     @Column(nullable = false)
@@ -62,12 +65,14 @@ public class Coupon extends BaseEntity {
 
     // 발급 조건 검증
     public void validateIssuable() {
+        // 수량 검증
         if (totalQuantity != null && issuedQuantity >= totalQuantity) {
             throw new BaseException(GlobalErrorCode.COUPON_EXHAUSTED);
         }
 
         LocalDateTime now = LocalDateTime.now();
 
+        // 기간 검증
         if (validStartDate != null && now.isBefore(validStartDate)) {
             throw new BaseException(GlobalErrorCode.INVALID_DATE);
         }
