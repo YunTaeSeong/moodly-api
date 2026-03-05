@@ -57,7 +57,7 @@ public class CouponService {
 
         // 2. 중복 발급 방지 (DB + 사전 체크)
         if (userCouponRepository.existsByUserIdAndCouponId(userId, couponId)) {
-            throw new BaseException(GlobalErrorCode.COUPON_ALREADY_ISSUED);
+            throw new BaseException(GlobalErrorCode.DUPLICATED_COUPON_ISSUE);
         }
 
         // 3. 수량 검증
