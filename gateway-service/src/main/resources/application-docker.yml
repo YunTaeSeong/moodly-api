@@ -24,9 +24,9 @@ spring:
             - id: user-internal
               uri: http://moodly-user:8082
               predicates:
-                - Path=/internal/**
+                - Path=/internal/user/**
               filters:
-                - RewritePath=/internal/(?<segment>.*), /internal/${segment}
+                - RewritePath=/internal/user/(?<segment>.*), /internal/${segment}
 
             - id: product
               uri: http://moodly-product:8083
@@ -38,9 +38,9 @@ spring:
             - id: product-internal
               uri: http://moodly-product:8083
               predicates:
-                - Path=/internal/**
+                - Path=/internal/product/**
               filters:
-                - RewritePath=/internal/(?<segment>.*), /internal/${segment}
+                - RewritePath=/internal/product/(?<segment>.*), /internal/${segment}
 
             - id: cart
               uri: http://moodly-cart:8084
@@ -73,9 +73,9 @@ spring:
             - id: coupon-internal
               uri: http://moodly-coupon:8087
               predicates:
-                - Path=/internal/**
+                - Path=/internal/coupon/**
               filters:
-                - RewritePath=/internal/(?<segment>.*), /internal/${segment}
+                - RewritePath=/internal/coupon/(?<segment>.*), /internal/${segment}
 
           globalcors:
             cors-configurations:
