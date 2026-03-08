@@ -102,7 +102,7 @@ class CouponServiceTest {
         );
 
         // then
-        assertEquals(GlobalErrorCode.COUPON_ALREADY_ISSUED, baseException.getErrorCode());
+        assertEquals(GlobalErrorCode.DUPLICATED_COUPON_ISSUE, baseException.getErrorCode());
         verify(userCouponRepository).existsByUserIdAndCouponId(userId, couponId);
     }
 
