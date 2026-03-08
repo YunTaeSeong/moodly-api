@@ -181,6 +181,7 @@ services:
       context: ..
       dockerfile: cart-service/Dockerfile
     image: tsyundeveloper/moodly-cart:latest
+    container_name: moodly-cart
     expose:
       - "8084"
     environment:
@@ -218,6 +219,7 @@ services:
       context: ..
       dockerfile: order-service/Dockerfile
     image: tsyundeveloper/moodly-order:latest
+    container_name: moodly-order
     expose:
       - "8085"
     environment:
