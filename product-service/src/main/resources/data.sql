@@ -178,7 +178,7 @@ INSERT IGNORE INTO products (name, price, discount, image, description, details,
 1, 2, 'system', NOW());
 
 -- 가전용품 (category_id = 2)
-INSERT IGNORE INTO products (name, price, discount, image, description, details, category_id, sub_category_id, rating, review_count, created_by, created_date) VALUES
+INSERT IGNORE INTO products (name, price, discount, image, description, details, category_id, sub_category_id, created_by, created_date) VALUES
 ('스마트 TV', 1200000.00, 0, 'https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=500&h=500&fit=crop', 
 '4K UHD 스마트 TV로 생생한 화질을 경험하세요. 스마트 기능이 탑재되어 다양한 콘텐츠를 즐길 수 있습니다.', 
 '• 4K UHD 해상도로 생생한 화질\n• 스마트 기능으로 다양한 앱 사용\n• HDR 지원으로 더욱 선명한 화면\n• 다양한 크기 옵션 제공 (55인치, 65인치)\n• 음성 인식 리모컨으로 편리한 조작', 
@@ -210,7 +210,7 @@ INSERT IGNORE INTO products (name, price, discount, image, description, details,
 2, 15, 'system', NOW());
 
 -- 푸드 (category_id = 3)
-INSERT IGNORE INTO products (name, price, discount, image, description, details, category_id, sub_category_id, rating, review_count, created_by, created_date) VALUES
+INSERT IGNORE INTO products (name, price, discount, image, description, details, category_id, sub_category_id, created_by, created_date) VALUES
 ('유기농 채소 세트', 25000.00, 0, 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=500&h=500&fit=crop', 
 '신선한 유기농 채소 세트로 건강한 식사를 시작하세요. 농약 없이 재배된 신선한 채소를 직접 배송해드립니다.', 
 '• 유기농 인증 받은 신선한 채소\n• 당일 수확 후 바로 배송\n• 다양한 채소 구성 (10종 이상)\n• 신선도 보장으로 오래 보관 가능\n• 건강한 식단에 완벽', 
@@ -274,7 +274,7 @@ INSERT IGNORE INTO products (name, price, discount, image, description, details,
 4, 25, 'system', NOW());
 
 -- 홈인테리어 (category_id = 5)
-INSERT IGNORE INTO products (name, price, discount, image, description, details, category_id, sub_category_id, rating, review_count, created_by, created_date) VALUES
+INSERT IGNORE INTO products (name, price, discount, image, description, details, category_id, sub_category_id, created_by, created_date) VALUES
 ('디퓨저 세트', 45000.00, 31, 'https://images.unsplash.com/photo-1606800054160-8e3c14e1a0b0?w=500&h=500&fit=crop', 
 '아로마 디퓨저로 집안을 향기롭게 만들어보세요. 다양한 아로마 오일과 함께 사용하여 분위기를 연출할 수 있습니다.', 
 '• 아로마 오일과 함께 사용하는 디퓨저\n• 다양한 향 옵션 제공\n• 조용한 작동으로 수면 방해 없음\n• LED 조명 기능으로 분위기 연출\n• 넓은 공간 향기 확산', 
