@@ -323,6 +323,45 @@ services:
       file: common-config.yml
       service: network-deploy-service
 
+  moodly-payment-db:
+    container_name: moodly-payment-db
+    ports:
+      - "3317:3306"
+    environment:
+      MYSQL_DATABASE: moodly_payment
+    volumes:
+      - payment-db:/var/lib/mysql
+    extends:
+      file: common-config.yml
+      service: microservice-db-config
+
+  moodly-payment:
+    profiles: ["app"]
+    build:
+      context: ..
+      dockerfile: payment-service/Dockerfile
+    image: tsyundeveloper/moodly-payment:latest
+    container_name: moodly-payment
+    expose:
+      - "8088"
+    environment:
+      SPRING_APPLICATION_NAME: payment-service
+      SPRING_PROFILES_ACTIVE: docker
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
+    depends_on:
+      moodly-payment-db:
+        condition: service_healthy
+      moodly-redis:
+        condition: service_started
+      moodly-kafka:
+        condition: service_started
+    extends:
+      file: common-config.yml
+      service: network-deploy-service
+
+
   moodly-gateway:
     profiles: ["app"]
     build:
@@ -351,6 +390,8 @@ services:
         condition: service_started
       moodly-coupon:
         condition: service_started
+      moodly-payment:
+        condition: service_started
     extends:
       file: common-config.yml
       service: network-deploy-service
@@ -367,3 +408,4 @@ volumes:
   order-db:
   notification-db:
   coupon-db:
+  payment-db:
