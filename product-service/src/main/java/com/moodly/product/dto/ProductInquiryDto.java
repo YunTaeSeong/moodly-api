@@ -23,6 +23,7 @@ public class ProductInquiryDto {
 
     private String content;
 
+    @Builder.Default
     private ProductInquiryStatus status = ProductInquiryStatus.PENDING; // 답변대기 Default
 
     private String reply;

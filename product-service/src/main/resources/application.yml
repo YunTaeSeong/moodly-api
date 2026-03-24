@@ -18,6 +18,9 @@ spring:
       hibernate:
         format_sql: true
 
+  kafka:
+    enabled: ${KAFKA_ENABLED:true}
+
 security:
   jwt:
     common:
