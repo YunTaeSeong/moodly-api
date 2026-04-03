@@ -1,11 +1,11 @@
 package com.moodly.coupon.controller;
 
 import com.moodly.common.security.principal.AuthPrincipal;
-import com.moodly.coupon.dto.UserCouponDto;
+import com.moodly.coupon.dto.CouponDto;
+import com.moodly.coupon.response.UserCouponDetailResponse;
 import com.moodly.coupon.response.UserCouponResponse;
 import com.moodly.coupon.service.CouponService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,6 +19,12 @@ public class CouponApiController {
 
     private final CouponService couponService;
 
+    // 받을 수 있는 쿠폰 : 경로가 userCouponId와 겹치지 않아야 함
+    @GetMapping("/receivable")
+    public List<CouponDto> getReceivable(@AuthenticationPrincipal AuthPrincipal principal) {
+        return couponService.getReceivableCoupons(principal.getUserId());
+    }
+
     // 단건 조회
     @GetMapping("/{userCouponId}")
     public UserCouponResponse getUserCoupon(
@@ -28,24 +34,37 @@ public class CouponApiController {
         return UserCouponResponse.response(couponService.getUserCoupon(principal.getUserId(), userCouponId));
     }
 
-    // 전체 조회
+    // 전체 조회 (쿠폰명·할인율 등 표시용)
     @GetMapping
-    public List<UserCouponResponse> getAllUserCoupon(
+    public List<UserCouponDetailResponse> getAllUserCoupon(
             @AuthenticationPrincipal AuthPrincipal principal
     ) {
-        return couponService.getAllUserCoupon(principal.getUserId())
-                .stream()
-                .map(UserCouponResponse::response)
-                .toList();
+        return couponService.getAllUserCouponDetails(principal.getUserId());
     }
 
-    // 쿠폰 발급
+//    // 쿠폰 발급
+//    @PostMapping("/{couponId}/issue")
+//    public UserCouponResponse issue(
+//            @AuthenticationPrincipal AuthPrincipal principal,
+//            @PathVariable Long couponId
+//    ) {
+//        return UserCouponResponse.response(couponService.issue(principal.getUserId(), couponId));
+//    }
+
+    // 쿠폰 발급 부하테스트용
+    // JWT 있으면 → principal userId 사용
+    // JWT 없으면 → userId = 1 (Locust 테스트용)
     @PostMapping("/{couponId}/issue")
     public UserCouponResponse issue(
             @AuthenticationPrincipal AuthPrincipal principal,
             @PathVariable Long couponId
     ) {
-        return UserCouponResponse.response(couponService.issue(principal.getUserId(), couponId));
+
+        Long userId = principal != null ? principal.getUserId() : 1L;
+
+        return UserCouponResponse.response(
+                couponService.issue(userId, couponId)
+        );
     }
 
     // 쿠폰 사용

@@ -45,3 +45,6 @@ security:
 
 auth-service:
   base_url: http://moodly-auth:8081
+
+coupon-service:
+  url: http://moodly-coupon:8087

@@ -26,3 +26,6 @@ app:
     from: ${NAVER_MAIL_USERNAME}
   frontend:
     base_url: http://localhost:3000
+
+coupon-service:
+  url: http://localhost:8087

@@ -46,3 +46,4 @@ security:
         - /internal/**
         - /PRODUCT/product/**
         - /PRODUCT/category/**
+        - /COUPON/coupon/**/issue

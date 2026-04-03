@@ -11,9 +11,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -56,6 +56,7 @@ class UserServiceTest {
         when(userRepository.existsByEmail(email)).thenReturn(false);
 
         Users savedUser = Users.of(email, encodedPassword, name, phoneNumber);
+        ReflectionTestUtils.setField(savedUser, "id", 1L);
         when(userRepository.save(any(Users.class))).thenReturn(savedUser);
 
         // when
