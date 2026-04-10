@@ -22,4 +22,6 @@ public class OrderPaymentSnapshotDto {
     private String customerName;
     private String customerPhoneNumber;
     private String status;
+    /** orders.payment_id = Toss paymentKey */
+    private String paymentKey;
 }

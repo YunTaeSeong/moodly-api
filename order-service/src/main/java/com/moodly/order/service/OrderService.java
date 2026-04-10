@@ -226,4 +226,14 @@ public class OrderService {
         order.markPaymentCompleted(tossPaymentKey);
     }
 
+    /**
+     * payment-service: Toss 결제 취소 후 주문을 결제취소로 전환 (멱등)
+     */
+    @Transactional
+    public void cancelOrderPayment(String orderId) {
+        Order order = orderRepository.findByOrderId(orderId)
+                .orElseThrow(() -> new BaseException(GlobalErrorCode.ORDER_NOT_FOUND));
+        order.markPaymentCancelled();
+    }
+
 }

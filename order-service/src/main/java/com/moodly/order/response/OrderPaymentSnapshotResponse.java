@@ -26,6 +26,8 @@ public class OrderPaymentSnapshotResponse {
     private String customerName;
     private String customerPhoneNumber;
     private OrderStatus status;
+    /** Toss paymentKey (결제 완료 후 저장) */
+    private String paymentKey;
 
     public static OrderPaymentSnapshotResponse from(Order order) {
         return OrderPaymentSnapshotResponse.builder()
@@ -40,6 +42,7 @@ public class OrderPaymentSnapshotResponse {
                 .customerName(order.getCustomerName())
                 .customerPhoneNumber(order.getCustomerPhoneNumber())
                 .status(order.getStatus())
+                .paymentKey(order.getPaymentId())
                 .build();
     }
 }

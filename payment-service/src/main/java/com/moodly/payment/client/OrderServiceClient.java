@@ -17,4 +17,7 @@ public interface OrderServiceClient {
             @PathVariable("orderId") String orderId,
             @RequestBody OrderPaymentCompleteFeignRequest body
     );
+
+    @PostMapping("/internal/order/payment/{orderId}/cancel")
+    void cancelOrderPayment(@PathVariable("orderId") String orderId);
 }

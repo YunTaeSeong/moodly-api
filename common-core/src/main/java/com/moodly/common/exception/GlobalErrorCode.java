@@ -68,6 +68,10 @@ public enum GlobalErrorCode implements ErrorCode {
     PAYMENT_GATEWAY_ERROR(HttpStatus.BAD_GATEWAY, "PAYMENT_005", "PAYMENT_GATEWAY_ERROR"),
     /** Toss 시크릿 키 미설정 */
     PAYMENT_CONFIG_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "PAYMENT_006", "PAYMENT_CONFIG_ERROR"),
+    /** 승인된 결제 내역을 찾을 수 없음 */
+    PAYMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "PAYMENT_007", "PAYMENT_NOT_FOUND"),
+    /** 이 단계에서 결제 취소 불가(배송 시작 후 등) */
+    ORDER_NOT_CANCELLABLE(HttpStatus.BAD_REQUEST, "ORDER_002", "ORDER_NOT_CANCELLABLE"),
     ;
 
     private final HttpStatus httpStatus;

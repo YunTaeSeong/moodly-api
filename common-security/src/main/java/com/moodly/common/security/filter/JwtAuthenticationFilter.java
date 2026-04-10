@@ -22,6 +22,23 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtTokenProvider tokenProvider;
 
+    /**
+     * 서비스 간 Feign 등으로 호출되는 /internal/** 는 permitAll 이더라도,
+     * 잘못된 Bearer 헤더가 붙으면 필터가 먼저 401을 내는 문제가 생길 수 있어 JWT 검증 자체를 생략
+     */
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        String path = request.getRequestURI();
+        if (path == null) {
+            return false;
+        }
+        String contextPath = request.getContextPath();
+        if (contextPath != null && !contextPath.isEmpty() && path.startsWith(contextPath)) {
+            path = path.substring(contextPath.length());
+        }
+        return path.startsWith("/internal/");
+    }
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         log.info("[USER] Authorization={}", request.getHeader(HttpHeaders.AUTHORIZATION));

@@ -28,4 +28,10 @@ public class InternalOrderController {
         orderService.completeOrderPayment(orderId, request.getPaymentKey());
         return ResponseEntity.ok().build();
     }
+
+    @PostMapping("/payment/{orderId}/cancel")
+    public ResponseEntity<Void> cancelPayment(@PathVariable String orderId) {
+        orderService.cancelOrderPayment(orderId);
+        return ResponseEntity.ok().build();
+    }
 }

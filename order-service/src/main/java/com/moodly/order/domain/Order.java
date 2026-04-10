@@ -144,4 +144,15 @@ public class Order extends BaseEntity {
         this.status = OrderStatus.PAYMENT_COMPLETED;
         this.paymentId = externalPaymentKey;
     }
+
+    /** 결제완료 직후 단계에서만 취소 허용 (배송 준비 이후는 별도 정책) */
+    public void markPaymentCancelled() {
+        if (this.status == OrderStatus.PAYMENT_CANCELLED) {
+            return;
+        }
+        if (this.status != OrderStatus.PAYMENT_COMPLETED) {
+            throw new BaseException(GlobalErrorCode.ORDER_NOT_CANCELLABLE);
+        }
+        this.status = OrderStatus.PAYMENT_CANCELLED;
+    }
 }

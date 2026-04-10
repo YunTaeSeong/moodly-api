@@ -86,6 +86,10 @@ public class Payment extends BaseEntity {
         return this.status == PaymentStatus.APPROVED;
     }
 
+    public void markAsCancelled() {
+        this.status = PaymentStatus.CANCELLED;
+    }
+
     /** Toss 승인 성공 직후 영속화용 */
     public static Payment createApproved(
             String orderId,
