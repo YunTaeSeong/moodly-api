@@ -7,6 +7,7 @@ import com.moodly.auth.client.user.dto.CredentialVerifyResponse;
 import com.moodly.auth.request.LoginRequest;
 import com.moodly.auth.request.RefreshRequest;
 import com.moodly.auth.response.TokenPairResponse;
+import com.moodly.auth.service.KakaoAuthService;
 import com.moodly.auth.token.JwtTokenIssuer;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -42,6 +43,9 @@ class AuthApiControllerTest {
 
     @MockitoBean
     private JwtTokenIssuer jwtTokenIssuer;
+
+    @MockitoBean
+    private KakaoAuthService kakaoAuthService;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -121,5 +125,4 @@ class AuthApiControllerTest {
                         .content(objectMapper.writeValueAsString(req)))
                 .andExpect(status().isUnauthorized());
     }
-
 }
