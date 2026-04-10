@@ -25,14 +25,7 @@ public class OrderApiController {
             @AuthenticationPrincipal AuthPrincipal principal
     ) {
         Long userId = principal.getUserId();
-        OrderDto dto = orderService.createOrder(
-                userId,
-                request.getCartIds(),
-                request.getCustomerName(),
-                request.getCustomerPhoneNumber(),
-                request.getDeliveryAddress(),
-                request.getCouponId()
-        );
+        OrderDto dto = orderService.createOrder(userId, request);
         return OrderResponse.from(dto);
     }
 

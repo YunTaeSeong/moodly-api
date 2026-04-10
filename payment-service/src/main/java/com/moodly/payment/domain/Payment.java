@@ -82,4 +82,56 @@ public class Payment extends BaseEntity {
         this.failReason = failReason;
     }
 
+    public boolean isApproved() {
+        return this.status == PaymentStatus.APPROVED;
+    }
+
+    /** Toss 승인 성공 직후 영속화용 */
+    public static Payment createApproved(
+            String orderId,
+            Long userId,
+            BigDecimal amount,
+            String paymentKey,
+            String paymentMethod,
+            LocalDateTime approvedAt,
+            String orderName,
+            String customerName
+    ) {
+        Payment p = new Payment();
+        p.orderId = orderId;
+        p.userId = userId;
+        p.amount = amount;
+        p.paymentKey = paymentKey;
+        p.paymentMethod = paymentMethod;
+        p.approvedAt = approvedAt;
+        p.orderName = orderName;
+        p.customerName = customerName;
+        p.status = PaymentStatus.APPROVED;
+        return p;
+    }
+
+    /** PG 승인 거절 등 */
+    public static Payment createFailed(
+            String orderId,
+            Long userId,
+            BigDecimal amount,
+            String paymentKey,
+            String orderName,
+            String customerName,
+            String failCode,
+            String failReason
+    ) {
+        Payment p = new Payment();
+        p.orderId = orderId;
+        p.userId = userId;
+        p.amount = amount;
+        p.paymentKey = paymentKey;
+        p.orderName = orderName;
+        p.customerName = customerName;
+        p.status = PaymentStatus.FAILED;
+        p.failCode = failCode;
+        p.failReason = failReason;
+        return p;
+    }
+
 }

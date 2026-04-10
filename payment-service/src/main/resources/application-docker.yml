@@ -27,3 +27,4 @@ security:
   jwt:
     common:
       secret: ${JWT_SECRET}
+      base-url: https://api.tosspayments.com

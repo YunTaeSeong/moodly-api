@@ -25,3 +25,9 @@ security:
       audience: moodly-api
       roles-claim: roles
 
+order-service:
+  base_url: http://localhost:8085
+
+coupon-service:
+  base_url: http://localhost:8087
+

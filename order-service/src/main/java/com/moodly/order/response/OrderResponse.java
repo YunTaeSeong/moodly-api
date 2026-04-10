@@ -32,6 +32,7 @@ public class OrderResponse {
     private OrderStatus status;
     private String paymentId;
     private LocalDateTime deliveredDate;
+    private LocalDateTime createdDate;
     private List<OrderItemResponse> items;
 
     public static OrderResponse from(OrderDto dto) {
@@ -50,6 +51,7 @@ public class OrderResponse {
                 .status(dto.getStatus())
                 .paymentId(dto.getPaymentId())
                 .deliveredDate(dto.getDeliveredDate())
+                .createdDate(dto.getCreatedDate())
                 .items(OrderItemResponse.fromList(dto.getItems()))
                 .build();
     }

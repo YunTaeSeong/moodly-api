@@ -31,6 +31,7 @@ public class OrderDto {
     private OrderStatus status;
     private String paymentId;
     private LocalDateTime deliveredDate;
+    private LocalDateTime createdDate;
     private List<OrderItemDto> items;
 
     public static OrderDto fromEntity(Order order, List<OrderItemDto> items) {
@@ -49,6 +50,7 @@ public class OrderDto {
                 .status(order.getStatus())
                 .paymentId(order.getPaymentId())
                 .deliveredDate(order.getDeliveredDate())
+                .createdDate(order.getCreatedDate())
                 .items(items != null ? items : List.of())
                 .build();
     }

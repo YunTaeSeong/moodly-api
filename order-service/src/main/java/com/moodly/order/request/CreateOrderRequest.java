@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Getter
@@ -27,5 +28,9 @@ public class CreateOrderRequest {
     // 배송지 (JSON 문자열)
     private String deliveryAddress;
 
+    /** user_coupons.id (미사용 시 null) */
     private Long couponId;
+
+    /** 쿠폰 할인 금액(프론트 계산값). 미전달 시 0 */
+    private BigDecimal discountAmount;
 }

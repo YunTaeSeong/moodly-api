@@ -7,6 +7,7 @@ import com.moodly.order.client.CartItemResponse;
 import com.moodly.order.domain.Order;
 import com.moodly.order.domain.OrderItem;
 import com.moodly.order.dto.OrderDto;
+import com.moodly.order.request.CreateOrderRequest;
 import com.moodly.order.repository.OrderItemRepository;
 import com.moodly.order.repository.OrderRepository;
 import org.junit.jupiter.api.Assertions;
@@ -52,7 +53,7 @@ class OrderServiceTest {
         String deliveryAddress = "서울시 강남구";
         Long couponId = null;
 
-        // 상품1: 10,000원, 10% 할인, 2개 / 상품2: 5,000원, 0% 할인, 1개
+        // 상품1: 판매가 10,000원(표시용 할인율 10%), 2개 / 상품2: 5,000원, 1개 — 금액은 판매가 그대로
         CartItemResponse item1 = createCartItem(10L, userId, 101L, "상품1", new BigDecimal("10000"), 10, 2);
         CartItemResponse item2 = createCartItem(11L, userId, 102L, "상품2", new BigDecimal("5000"), 0, 1);
 
@@ -61,16 +62,22 @@ class OrderServiceTest {
         when(orderRepository.save(any(Order.class))).thenAnswer(invocation -> invocation.getArgument(0));
         when(orderItemRepository.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
 
+        CreateOrderRequest createReq = CreateOrderRequest.builder()
+                .cartIds(cartIds)
+                .customerName(customerName)
+                .customerPhoneNumber(customerPhoneNumber)
+                .deliveryAddress(deliveryAddress)
+                .couponId(couponId)
+                .build();
+
         // when
-        OrderDto result = orderService.createOrder(userId, cartIds, customerName, customerPhoneNumber, deliveryAddress, couponId);
+        OrderDto result = orderService.createOrder(userId, createReq);
 
         // then
-        // 상품1: 10,000원 * 0.9 = 9,000원 -> 2개 = 18,000원
-        // 상품2: 5,000원 * 1.0 = 5,000원 -> 1개 = 5,000원
-        // totalAmount = 23,000원 (15,000원 이상이므로 배송비 0원 예상)
-        assertEquals(new BigDecimal("23000.00"), result.getTotalAmount());
+        // 상품1: 10,000원 × 2 = 20,000원, 상품2: 5,000원 × 1 = 5,000원 → 합계 25,000원, 배송비 무료
+        assertEquals(0, result.getTotalAmount().compareTo(new BigDecimal("25000")));
         assertEquals(BigDecimal.ZERO, result.getShippingFee());
-        assertEquals(new BigDecimal("23000.00"), result.getFinalAmount());
+        assertEquals(0, result.getFinalAmount().compareTo(new BigDecimal("25000")));
 
         assertEquals(customerName, result.getCustomerName());
         assertEquals(2, result.getItems().size());
@@ -106,8 +113,12 @@ class OrderServiceTest {
         // when
         BaseException baseException = assertThrows(
                 BaseException.class,
-                () -> orderService.createOrder(
-                        userId, cartIds, "테스트", "010-1111-2222", "서울시 강남구", null)
+                () -> orderService.createOrder(userId, CreateOrderRequest.builder()
+                        .cartIds(cartIds)
+                        .customerName("테스트")
+                        .customerPhoneNumber("010-1111-2222")
+                        .deliveryAddress("서울시 강남구")
+                        .build())
         );
 
         // then
@@ -132,8 +143,12 @@ class OrderServiceTest {
         // when
         BaseException baseException = assertThrows(
                 BaseException.class,
-                () -> orderService.createOrder(
-                        userId, cartIds, "테스트", "010-1111-2222", "서울시 강남구", null)
+                () -> orderService.createOrder(userId, CreateOrderRequest.builder()
+                        .cartIds(cartIds)
+                        .customerName("테스트")
+                        .customerPhoneNumber("010-1111-2222")
+                        .deliveryAddress("서울시 강남구")
+                        .build())
         );
 
         // then
@@ -161,7 +176,12 @@ class OrderServiceTest {
         // when
         // 삭제에서 에러지만, try-catch 때문에 정상 종료
         assertDoesNotThrow(() -> {
-                    orderService.createOrder(userId, cartIds, "테스트", "010-1111-2222", "서울시 강남구", null);
+                    orderService.createOrder(userId, CreateOrderRequest.builder()
+                            .cartIds(cartIds)
+                            .customerName("테스트")
+                            .customerPhoneNumber("010-1111-2222")
+                            .deliveryAddress("서울시 강남구")
+                            .build());
         });
 
         // then
@@ -236,23 +256,17 @@ class OrderServiceTest {
     }
 
     @Test
-    @DisplayName("전체 조회 : 실패(주문 내역 없음)")
-    void 전체_조회_실패_주문_내역_없음() {
-        // given
+    @DisplayName("전체 조회 : 주문 없으면 빈 목록")
+    void 전체_조회_빈목록() {
         Long userId = 1L;
         when(orderRepository.findAllByUserIdOrderByCreatedDateDesc(userId))
                 .thenReturn(Collections.emptyList());
 
-        // when
-        BaseException ex = assertThrows(
-                BaseException.class,
-                () -> orderService.getOrderAll(userId)
-        );
+        List<OrderDto> result = orderService.getOrderAll(userId);
 
-        // then
-        assertEquals(GlobalErrorCode.ORDER_NOT_FOUND, ex.getErrorCode());
-
-        verify(orderRepository, times(1)).findAllByUserIdOrderByCreatedDateDesc(userId); // ✅ 호출됨
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
+        verify(orderRepository, times(1)).findAllByUserIdOrderByCreatedDateDesc(userId);
         verify(orderItemRepository, never()).findByOrderId(anyLong());
     }
 

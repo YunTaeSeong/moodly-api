@@ -9,8 +9,11 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "security.jwt.common")
 public class JwtProperties {
 
-    // HS256 secret
     private String secret;
+
+    public void setSecret(String secret) {
+        this.secret = secret == null ? null : secret.strip();
+    }
 
     // 토큰 발급
     // ex: moodly-auth

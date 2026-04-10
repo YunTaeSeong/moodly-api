@@ -7,9 +7,8 @@ import com.moodly.auth.repository.RefreshTokenRepository;
 import com.moodly.common.exception.BaseException;
 import com.moodly.common.exception.GlobalErrorCode;
 import com.moodly.common.security.jwt.JwtProperties;
+import com.moodly.common.security.jwt.JwtSigningKeySupport;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.io.Decoders;
-import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -103,12 +102,7 @@ public class JwtTokenIssuer {
     }
 
     private SecretKey getKey() {
-        String secret = jwtTokenProvider.getSecret();
-        try {
-            return Keys.hmacShaKeyFor(Decoders.BASE64.decode(secret));
-        } catch (Exception e) {
-            return Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
-        }
+        return JwtSigningKeySupport.toHmacShaKey(jwtTokenProvider.getSecret());
     }
 
     public String sha256Hex(String raw) {

@@ -1,6 +1,8 @@
 package com.moodly.order.domain;
 
 import com.moodly.common.domain.BaseEntity;
+import com.moodly.common.exception.BaseException;
+import com.moodly.common.exception.GlobalErrorCode;
 import com.moodly.order.enums.OrderStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -11,6 +13,7 @@ import lombok.experimental.SuperBuilder;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Entity
 @Table(
@@ -71,7 +74,7 @@ public class Order extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
     @Builder.Default
-    private OrderStatus status = OrderStatus.PAYMENT_COMPLETED;
+    private OrderStatus status = OrderStatus.PENDING_PAYMENT;
 
     @Column(name = "payment_id", length = 100)
     private String paymentId;
@@ -105,5 +108,40 @@ public class Order extends BaseEntity {
                 .customerPhoneNumber(customerPhoneNumber)
                 .status(status)
                 .build();
+    }
+
+    /** 결제 승인 전: 본인 주문인지 */
+    public void assertOwnedBy(Long userId) {
+        if (!Objects.equals(this.userId, userId)) {
+            throw new BaseException(GlobalErrorCode.MISSING_AUTHORIZATION);
+        }
+    }
+
+    /** 결제 금액(Toss 요청 금액)과 주문 최종 금액 일치 여부 */
+    public void assertAmountMatches(BigDecimal paidAmount) {
+        if (paidAmount == null || this.finalAmount.compareTo(paidAmount) != 0) {
+            throw new BaseException(GlobalErrorCode.PAYMENT_AMOUNT_MISMATCH);
+        }
+    }
+
+    /** 배송지 JSON 존재 여부 */
+    public void assertDeliveryAddressPresent() {
+        if (this.deliveryAddress == null || this.deliveryAddress.isBlank()) {
+            throw new BaseException(GlobalErrorCode.DELIVERY_ADDRESS_REQUIRED);
+        }
+    }
+
+    /** 결제 대기 상태에서만 승인 가능 */
+    public void assertPayable() {
+        if (this.status != OrderStatus.PENDING_PAYMENT) {
+            throw new BaseException(GlobalErrorCode.ORDER_NOT_PAYABLE);
+        }
+    }
+
+    /** Toss 결제 완료 후 주문 상태 반영 */
+    public void markPaymentCompleted(String externalPaymentKey) {
+        assertPayable();
+        this.status = OrderStatus.PAYMENT_COMPLETED;
+        this.paymentId = externalPaymentKey;
     }
 }

@@ -6,8 +6,6 @@ import com.moodly.common.security.principal.AuthPrincipal;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.io.Decoders;
-import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -16,7 +14,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
-import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
@@ -31,19 +28,7 @@ public class JwtTokenProvider {
 
     @PostConstruct
     private void init() {
-        this.key = buildKey(properties.getSecret());
-    }
-
-    private static SecretKey buildKey(String secret) {
-        if (secret == null || secret.isBlank()) {
-            throw new BaseException(GlobalErrorCode.INVALID_JWT_SECRET);
-        }
-        try {
-            byte[] decode = Decoders.BASE64.decode(secret);
-            return Keys.hmacShaKeyFor(decode);
-        } catch (Exception e) {
-            return Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
-        }
+        this.key = JwtSigningKeySupport.toHmacShaKey(properties.getSecret());
     }
 
     /**
@@ -134,9 +119,15 @@ public class JwtTokenProvider {
      * Authorization 헤더에서 Bearer 토큰 추출
      */
     public String resolveBearerToken(String authorizationHeader) {
-        if (authorizationHeader == null) return null;
-        if (!authorizationHeader.startsWith("Bearer ")) return null;
-        String token = authorizationHeader.substring(7).trim();
+        if (authorizationHeader == null) {
+            return null;
+        }
+        String v = authorizationHeader.trim();
+        final String prefix = "Bearer ";
+        if (v.length() < prefix.length() || !v.regionMatches(true, 0, prefix, 0, prefix.length())) {
+            return null;
+        }
+        String token = v.substring(prefix.length()).trim();
         return token.isEmpty() ? null : token;
     }
 

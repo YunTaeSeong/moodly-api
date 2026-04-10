@@ -33,6 +33,6 @@ security:
 
 #security:
 #  jwt:
-#    secret: ${JWT_SECRET}
+#    secret: ${JWT_SECRET:bW9vZGx5LXRlc3Qtand0LXNlY3JldC0yMDI2}
 #    access-token-ttl-seconds: ${JWT_ACCESS_TOKEN}
 #    refresh-token-ttl-seconds: ${JWT_REFRESH_TOKEN}

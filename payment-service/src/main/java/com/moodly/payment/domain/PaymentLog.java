@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
-import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDateTime;
 
@@ -44,19 +43,22 @@ public class PaymentLog {
     @Column(name = "raw_payload", columnDefinition = "json")
     private String rawPayload;
 
-    @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
-    /**
-     * 비즈니스 로직
-     */
-    // 로그 생성
-    public static PaymentLog createLog(String orderId, String eventType, String payload) {
+    public static PaymentLog of(
+            String orderId,
+            String eventType,
+            String paymentKey,
+            Long paymentId,
+            String rawPayloadJson
+    ) {
         return PaymentLog.builder()
                 .orderId(orderId)
                 .eventType(eventType)
-                .paymentKey(payload)
+                .paymentKey(paymentKey)
+                .paymentId(paymentId)
+                .rawPayload(rawPayloadJson)
                 .createdAt(LocalDateTime.now())
                 .build();
     }

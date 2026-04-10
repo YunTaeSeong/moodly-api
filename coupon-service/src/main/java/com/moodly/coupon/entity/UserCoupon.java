@@ -70,19 +70,25 @@ public class UserCoupon {
                 .build();
     }
 
-    // 쿠폰 사용
-    public void use(String orderId) {
-
+    /**
+     * 결제 승인 전(Toss 호출 전): 사용 가능(ISSUED·미만료)인지 검증
+     */
+    public void assertPayableBeforeCharge() {
         if (this.status != UserCouponStatus.ISSUED) {
             throw new BaseException(GlobalErrorCode.COUPON_ALREADY_USED);
         }
-
         LocalDateTime now = LocalDateTime.now();
-
         if (expiredAt != null && now.isAfter(expiredAt)) {
             throw new BaseException(GlobalErrorCode.COUPON_EXPIRED);
         }
+    }
 
+    // 쿠폰 사용
+    public void use(String orderId) {
+
+        assertPayableBeforeCharge();
+
+        LocalDateTime now = LocalDateTime.now();
         this.status = UserCouponStatus.USED;
         this.usedAt = now;
         this.orderId = orderId;

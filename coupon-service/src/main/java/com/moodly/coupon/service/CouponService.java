@@ -178,6 +178,20 @@ public class CouponService {
                 .orElseThrow(() -> new BaseException(GlobalErrorCode.COUPON_NOT_FOUND));
     }
 
+    /**
+     * payment-service: 주문에 연결된 사용자 쿠폰(user_coupons.id)이 Toss 승인 전에 사용 가능한지 검증 (DB 변경 없음).
+     * orderProductTotalAmount는 주문의 상품 합계(할인 전, order-service orders.total_amount)
+     */
+    @Transactional(readOnly = true)
+    public void validateUserCouponForOrderPayment(Long userId, Long userCouponId, BigDecimal orderProductTotalAmount) {
+        UserCoupon userCoupon = userCouponRepository.findByIdAndUserId(userCouponId, userId)
+                .orElseThrow(() -> new BaseException(GlobalErrorCode.COUPON_NOT_FOUND));
+        userCoupon.assertPayableBeforeCharge();
+        Coupon coupon = couponRepository.findById(userCoupon.getCouponId())
+                .orElseThrow(() -> new BaseException(GlobalErrorCode.COUPON_NOT_FOUND));
+        coupon.validateUsable(orderProductTotalAmount);
+    }
+
 
     // == 관리자 == //
     // 쿠폰 생성
