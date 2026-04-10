@@ -26,6 +26,8 @@ public class PaymentPostConfirmService {
     private final PaymentLogRepository paymentLogRepository;
     private final OrderServiceClient orderServiceClient;
 
+    private static final String ORDERS = "주문";
+
     @Transactional
     public Payment persistApprovedAndCompleteOrder(
             OrderPaymentSnapshotDto order,
@@ -34,7 +36,7 @@ public class PaymentPostConfirmService {
             TossConfirmResult toss
     ) {
         String orderId = order.getOrderId();
-        String orderName = "주문 " + orderId;
+        String orderName = ORDERS + orderId;
         Payment payment = Payment.createApproved(
                 orderId,
                 order.getUserId(),
