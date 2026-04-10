@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.Objects;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -47,6 +48,18 @@ public class PaymentConfirmService {
 
         assertBaseOrderConstraints(userId, amount, order);
 
+        Optional<Payment> existingByKey = paymentRepository.findByPaymentKey(paymentKey);
+        if (existingByKey.isPresent()) {
+            Payment p = existingByKey.get();
+            if (!Objects.equals(p.getOrderId(), orderId)) {
+                throw new BaseException(GlobalErrorCode.MISSING_AUTHORIZATION);
+            }
+            if (p.getStatus() == PaymentStatus.APPROVED) {
+                log.info("[Payment] idempotent confirm by paymentKey orderId={}", orderId);
+                return PaymentConfirmResponse.from(p);
+            }
+        }
+
         if (STATUS_PAYMENT_COMPLETED.equals(order.getStatus())
                 || paymentRepository.existsByOrderIdAndStatus(orderId, PaymentStatus.APPROVED)) {
             log.info("[Payment] idempotent confirm orderId={}", orderId);
@@ -63,6 +76,24 @@ public class PaymentConfirmService {
 
         TossConfirmResult toss = tossPaymentsClient.confirm(paymentKey, orderId, amount);
         if (!toss.success()) {
+            if (isLikelyConcurrentTossFailure(toss.errorCode())) {
+                Optional<Payment> afterRace = paymentRepository.findByPaymentKey(paymentKey);
+                if (afterRace.isPresent()
+                        && afterRace.get().getStatus() == PaymentStatus.APPROVED
+                        && Objects.equals(afterRace.get().getOrderId(), orderId)) {
+                    log.info("[Payment] Toss returned {} but payment already approved (concurrent confirm)", toss.errorCode());
+                    return PaymentConfirmResponse.from(afterRace.get());
+                }
+                try {
+                    OrderPaymentSnapshotDto refreshed = fetchOrder(orderId);
+                    if (STATUS_PAYMENT_COMPLETED.equals(refreshed.getStatus())) {
+                        log.info("[Payment] Toss returned {} but order already paid orderId={}", toss.errorCode(), orderId);
+                        return PaymentConfirmResponse.idempotent(orderId, paymentKey);
+                    }
+                } catch (Exception e) {
+                    log.warn("[Payment] re-fetch order after Toss concurrent error failed orderId={}", orderId, e);
+                }
+            }
             String orderName = "주문 " + orderId;
             paymentFailureRecorder.recordGatewayFailure(
                     orderId,
@@ -104,6 +135,15 @@ public class PaymentConfirmService {
         if (order.getDeliveryAddress() == null || order.getDeliveryAddress().isBlank()) {
             throw new BaseException(GlobalErrorCode.DELIVERY_ADDRESS_REQUIRED);
         }
+    }
+
+    /** 동시에 confirm 이 두 번 들어올 때 Toss 가 두 번째에 거는 코드 */
+    private static boolean isLikelyConcurrentTossFailure(String code) {
+        if (code == null || code.isBlank()) {
+            return false;
+        }
+        String c = code.toUpperCase();
+        return c.contains("ALREADY_PROCESSING") || c.contains("ALREADY_PROCESSED");
     }
 
     private void validateCoupon(OrderPaymentSnapshotDto order) {

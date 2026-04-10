@@ -6,6 +6,8 @@ import com.moodly.payment.log.PaymentLogEventType;
 import com.moodly.payment.repository.PaymentLogRepository;
 import com.moodly.payment.repository.PaymentRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,6 +17,7 @@ import java.math.BigDecimal;
 /**
  * Toss 승인 실패 등 메인 트랜잭션이 롤백되어도 실패 이력을 남기기 위해 REQUIRES_NEW 사용
  */
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class PaymentFailureRecorder {
@@ -34,6 +37,10 @@ public class PaymentFailureRecorder {
             String failReason,
             String rawPayload
     ) {
+        if (paymentRepository.existsByPaymentKey(paymentKey)) {
+            log.warn("[Payment] skip failure record; payment_key already exists (concurrent confirm): {}", paymentKey);
+            return;
+        }
         Payment failed = Payment.createFailed(
                 orderId,
                 userId,
@@ -44,13 +51,17 @@ public class PaymentFailureRecorder {
                 failCode,
                 failReason
         );
-        paymentRepository.save(failed);
-        paymentLogRepository.save(PaymentLog.of(
-                orderId,
-                PaymentLogEventType.CONFIRM_FAILED,
-                paymentKey,
-                failed.getId(),
-                rawPayload
-        ));
+        try {
+            paymentRepository.save(failed);
+            paymentLogRepository.save(PaymentLog.of(
+                    orderId,
+                    PaymentLogEventType.CONFIRM_FAILED,
+                    paymentKey,
+                    failed.getId(),
+                    rawPayload
+            ));
+        } catch (DataIntegrityViolationException e) {
+            log.warn("[Payment] duplicate payment_key while recording failure (race), ignored: {}", paymentKey, e);
+        }
     }
 }
