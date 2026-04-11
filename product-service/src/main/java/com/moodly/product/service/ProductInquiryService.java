@@ -16,6 +16,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronization;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
+
+import java.util.concurrent.CompletableFuture;
 
 @Service
 @RequiredArgsConstructor
@@ -48,7 +52,6 @@ public class ProductInquiryService {
         // 상품 등록
         ProductInquiry save = productInquiryRepository.save(ProductInquiry.of(userId, productId, content));
 
-        // Kafka 이벤트 발행: 문의 생성 → 관리자에게 알림
         if (inquiryEventService != null) {
             Product product = productRepository.findById(productId).orElse(null);
             String productName = product != null ? product.getName() : "상품";
@@ -58,7 +61,7 @@ public class ProductInquiryService {
                     productName,
                     userId
             );
-            inquiryEventService.publishEvent(event);
+            publishInquiryEventAfterCommit(event);
         }
 
         return ProductInquiryDto.fromEntity(save);
@@ -186,11 +189,10 @@ public class ProductInquiryService {
         isAdmin(principal);
 
         ProductInquiry productInquiry = productInquiryRepository.findById(productInquiryId)
-                .orElseThrow(() -> new BaseException(GlobalErrorCode.INQUIRY_ALREADY_REPLIED));
+                .orElseThrow(() -> new BaseException(GlobalErrorCode.PRODUCTID_INQUIRY_NOT_FOUND));
 
         productInquiry.setReplyAdmin(principal.getUserId(), "ADMIN", reply);
 
-        // Kafka 이벤트 발행: 답변 등록 → 문의 작성자에게 알림
         if (inquiryEventService != null) {
             Product product = productRepository.findById(productInquiry.getProductId()).orElse(null);
             String productName = product != null ? product.getName() : "상품";
@@ -202,7 +204,7 @@ public class ProductInquiryService {
                     productInquiry.getUserId(),
                     replyPreview
             );
-            inquiryEventService.publishEvent(event);
+            publishInquiryEventAfterCommit(event);
         }
 
         return ProductInquiryDto.fromEntity(productInquiry);
@@ -220,7 +222,7 @@ public class ProductInquiryService {
         isAdmin(principal);
 
         ProductInquiry productInquiry = productInquiryRepository.findById(productInquiryId)
-                .orElseThrow(() -> new BaseException(GlobalErrorCode.INQUIRY_ALREADY_REPLIED));
+                .orElseThrow(() -> new BaseException(GlobalErrorCode.PRODUCTID_INQUIRY_NOT_FOUND));
 
         productInquiry.setContent(content);
         return ProductInquiryDto.fromEntity(productInquiry);
@@ -236,8 +238,28 @@ public class ProductInquiryService {
     ){
         isAdmin(principal);
         ProductInquiry productInquiry = productInquiryRepository.findById(productInquiryId)
-                .orElseThrow(() -> new BaseException(GlobalErrorCode.INQUIRY_ALREADY_REPLIED));
+                .orElseThrow(() -> new BaseException(GlobalErrorCode.PRODUCTID_INQUIRY_NOT_FOUND));
 
         productInquiryRepository.delete(productInquiry);
+    }
+
+    private void publishInquiryEventAfterCommit(InquiryEvent event) {
+        Runnable task = () -> {
+            try {
+                inquiryEventService.publishEvent(event);
+            } catch (Throwable t) {
+                log.warn("[Inquiry] failed, ignored: {}", t.getMessage());
+            }
+        };
+        if (!TransactionSynchronizationManager.isSynchronizationActive()) {
+            task.run();
+            return;
+        }
+        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+            @Override
+            public void afterCommit() {
+                CompletableFuture.runAsync(task);
+            }
+        });
     }
 }

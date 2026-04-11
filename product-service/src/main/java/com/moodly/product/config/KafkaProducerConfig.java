@@ -35,6 +35,8 @@ public class KafkaProducerConfig {
         // Kafka 연결 실패 시 재시도 제한
         config.put(ProducerConfig.RETRIES_CONFIG, 0);
 
+        config.put(ProducerConfig.MAX_BLOCK_MS_CONFIG, 3000);
+
         // 요청 타임아웃
         config.put(ProducerConfig.REQUEST_TIMEOUT_MS_CONFIG, 5000);
 
