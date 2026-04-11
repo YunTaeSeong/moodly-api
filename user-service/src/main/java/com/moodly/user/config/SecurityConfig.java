@@ -38,7 +38,12 @@ public class SecurityConfig {
 
                         // 공개 API (우선 회원가입만)
                         .requestMatchers(
-                                "/user/register", "/user/find-id/request", "/user/find-id/confirm", "/user/password/reset/request", "/user/password/reset/confirm"
+                                "/user/register",
+                                "/user/email-available",
+                                "/user/find-id/request",
+                                "/user/find-id/confirm",
+                                "/user/password/reset/request",
+                                "/user/password/reset/confirm"
                         ).permitAll()
 
                         // 나머지 user API는 로그인 후 접근

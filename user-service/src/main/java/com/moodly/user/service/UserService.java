@@ -40,6 +40,14 @@ public class UserService {
         return UserDto.fromEntity(save);
     }
 
+    @Transactional(readOnly = true)
+    public boolean isEmailRegistered(String email) {
+        if (email == null || email.isBlank()) {
+            return false;
+        }
+        return userRepository.existsByEmail(email.trim());
+    }
+
     /**
      * 카카오 사용자 조회 또는 생성
      * @param providerId 카카오 사용자 ID

@@ -9,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/user")
@@ -24,5 +26,14 @@ public class UserApiController {
     ) {
         UserDto dto = userService.register(request.getEmail(), request.getPassword(), request.getRePassword(), request.getName(), request.getPhoneNumber());
         return UserResponse.response(dto);
+    }
+
+    /**
+     * 회원가입 전 이메일 사용 여부
+     */
+    @GetMapping("/email-available")
+    public Map<String, Boolean> emailAvailable(@RequestParam("email") String email) {
+        boolean exists = userService.isEmailRegistered(email);
+        return Map.of("exists", exists, "available", !exists);
     }
 }
