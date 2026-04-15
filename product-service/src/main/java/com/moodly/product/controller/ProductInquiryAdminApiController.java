@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/internal/product/inquiry")
+@RequestMapping({"/internal/product/inquiry", "/product/admin/inquiry"})
 public class ProductInquiryAdminApiController {
 
     private final ProductInquiryService productInquiryService;
