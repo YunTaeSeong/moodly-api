@@ -3,6 +3,20 @@ services:
     networks:
       - moodly
 
+  microservice-base-config:
+    extends:
+      service: network-deploy-service
+    deploy:
+      resources:
+        limits:
+          memory: 700m
+
+  microservice-configserver-config:
+    extends:
+      service: microservice-base-config
+    environment:
+      SPRING_CONFIG_IMPORT: configserver:http://configserver:8071/
+
   microservice-db-config:
     extends:
       service: network-deploy-service
