@@ -1,5 +1,5 @@
 FROM eclipse-temurin:21-jre
 WORKDIR /app
-COPY configserver/build/libs/*.jar app.jar
+COPY eurekaserver/build/libs/*.jar app.jar
 EXPOSE 8070
 ENTRYPOINT ["java","-jar",  "/app/app.jar"]
