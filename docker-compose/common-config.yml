@@ -14,8 +14,20 @@ services:
   microservice-configserver-config:
     extends:
       service: microservice-base-config
+    depends_on:
+      moodly-configserver:
+        condition: service_healthy
     environment:
-      SPRING_CONFIG_IMPORT: configserver:http://configserver:8071/
+      SPRING_CONFIG_IMPORT: "optional:configserver:http://moodly-configserver:8071/"
+
+  microservice-eurekaserver-config:
+    extends:
+      service: microservice-configserver-config
+    depends_on:
+      moodly-eurekaserver:
+        condition: service_healthy
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://moodly-eurekaserver:8070/eureka/
 
   microservice-db-config:
     extends:

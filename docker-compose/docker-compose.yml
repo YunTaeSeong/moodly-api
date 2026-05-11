@@ -17,6 +17,26 @@ services:
       file: common-config.yml
       service: microservice-base-config
 
+  moodly-eurekaserver:
+    image: moodly-eurekaserver:latest
+    container_name: moodly-eurekaserver
+    build:
+      context: ..
+      dockerfile: eurekaserver/Dockerfile
+    ports:
+      - "8070:8070"
+    healthcheck:
+      test: "curl --fail --silent localhost:8070/actuator/health/readiness | grep UP || exit 1"
+      interval: 10s     # 상태 확인 주기
+      timeout: 5s       # 제한 시간
+      retries: 10       # 재시도 횟수
+      start_period: 10s # 부팅되는동안 기다려주는 시간
+    extends:
+      file: common-config.yml
+      service: microservice-configserver-config
+    environment:
+      SPRING_APPLICATION_NAME: eurekaserver
+
   moodly-redis:
     image: redis:7
     container_name: moodly-redis
@@ -83,7 +103,6 @@ services:
     expose:
       - "8081"
     environment:
-      SPRING_CONFIG_IMPORT: "configserver:http://moodly-configserver:8071/"
       SPRING_APPLICATION_NAME: auth-service
       SPRING_PROFILES_ACTIVE: docker
       DB_USERNAME: ${DB_USERNAME}
@@ -99,7 +118,7 @@ services:
         condition: service_healthy
     extends:
       file: common-config.yml
-      service: microservice-configserver-config
+      service: microservice-eurekaserver-config
 
   moodly-user-db:
     container_name: moodly-user-db
@@ -123,7 +142,6 @@ services:
     expose:
       - "8082"
     environment:
-      SPRING_CONFIG_IMPORT: "configserver:http://moodly-configserver:8071/"
       SPRING_APPLICATION_NAME: user-service
       SPRING_PROFILES_ACTIVE: docker
       DB_USERNAME: ${DB_USERNAME}
@@ -143,7 +161,7 @@ services:
         condition: service_healthy
     extends:
       file: common-config.yml
-      service: microservice-configserver-config
+      service: microservice-eurekaserver-config
 
   moodly-product-db:
     container_name: moodly-product-db
@@ -167,7 +185,6 @@ services:
     expose:
       - "8083"
     environment:
-      SPRING_CONFIG_IMPORT: "configserver:http://moodly-configserver:8071/"
       SPRING_APPLICATION_NAME: product-service
       SPRING_PROFILES_ACTIVE: docker
       DB_USERNAME: ${DB_USERNAME}
@@ -184,7 +201,7 @@ services:
         condition: service_healthy
     extends:
       file: common-config.yml
-      service: microservice-configserver-config
+      service: microservice-eurekaserver-config
 
   moodly-cart-db:
     container_name: moodly-cart-db
@@ -208,7 +225,6 @@ services:
     expose:
       - "8084"
     environment:
-      SPRING_CONFIG_IMPORT: "configserver:http://moodly-configserver:8071/"
       SPRING_APPLICATION_NAME: cart-service
       SPRING_PROFILES_ACTIVE: docker
       DB_USERNAME: ${DB_USERNAME}
@@ -225,7 +241,7 @@ services:
         condition: service_healthy
     extends:
       file: common-config.yml
-      service: microservice-configserver-config
+      service: microservice-eurekaserver-config
 
   moodly-order-db:
     container_name: moodly-order-db
@@ -249,7 +265,6 @@ services:
     expose:
       - "8085"
     environment:
-      SPRING_CONFIG_IMPORT: "configserver:http://moodly-configserver:8071/"
       SPRING_APPLICATION_NAME: order-service
       SPRING_PROFILES_ACTIVE: docker
       DB_USERNAME: ${DB_USERNAME}
@@ -266,7 +281,7 @@ services:
         condition: service_healthy
     extends:
       file: common-config.yml
-      service: microservice-configserver-config
+      service: microservice-eurekaserver-config
 
   moodly-notification-db:
     container_name: moodly-notification-db
@@ -290,7 +305,6 @@ services:
     expose:
       - "8086"
     environment:
-      SPRING_CONFIG_IMPORT: "configserver:http://moodly-configserver:8071/"
       SPRING_APPLICATION_NAME: notification-service
       SPRING_PROFILES_ACTIVE: docker
       DB_USERNAME: ${DB_USERNAME}
@@ -317,7 +331,7 @@ services:
         condition: service_healthy
     extends:
       file: common-config.yml
-      service: microservice-configserver-config
+      service: microservice-eurekaserver-config
 
   moodly-coupon-db:
     container_name: moodly-coupon-db
@@ -341,7 +355,6 @@ services:
     expose:
       - "8087"
     environment:
-      SPRING_CONFIG_IMPORT: "configserver:http://moodly-configserver:8071/"
       SPRING_APPLICATION_NAME: coupon-service
       SPRING_PROFILES_ACTIVE: docker
       DB_USERNAME: ${DB_USERNAME}
@@ -358,7 +371,7 @@ services:
         condition: service_healthy
     extends:
       file: common-config.yml
-      service: microservice-configserver-config
+      service: microservice-eurekaserver-config
 
   moodly-payment-db:
     container_name: moodly-payment-db
@@ -382,7 +395,6 @@ services:
     expose:
       - "8088"
     environment:
-      SPRING_CONFIG_IMPORT: "configserver:http://moodly-configserver:8071/"
       SPRING_APPLICATION_NAME: payment-service
       SPRING_PROFILES_ACTIVE: docker
       DB_USERNAME: ${DB_USERNAME}
@@ -400,7 +412,7 @@ services:
         condition: service_healthy
     extends:
       file: common-config.yml
-      service: microservice-configserver-config
+      service: microservice-eurekaserver-config
 
 
   moodly-gateway:
@@ -413,7 +425,6 @@ services:
     ports:
       - "8072:8072"
     environment:
-      SPRING_CONFIG_IMPORT: "configserver:http://moodly-configserver:8071/"
       SPRING_APPLICATION_NAME: gateway-service
       SPRING_PROFILES_ACTIVE: docker
       JWT_SECRET: ${JWT_SECRET}
@@ -438,7 +449,7 @@ services:
         condition: service_healthy
     extends:
       file: common-config.yml
-      service: microservice-configserver-config
+      service: microservice-eurekaserver-config
 
 networks:
   moodly:
