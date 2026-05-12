@@ -27,10 +27,10 @@ services:
       - "8070:8070"
     healthcheck:
       test: "curl --fail --silent localhost:8070/actuator/health/readiness | grep UP || exit 1"
-      interval: 10s     # 상태 확인 주기
-      timeout: 5s       # 제한 시간
-      retries: 10       # 재시도 횟수
-      start_period: 10s # 부팅되는동안 기다려주는 시간
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
     extends:
       file: common-config.yml
       service: microservice-configserver-config
@@ -102,6 +102,12 @@ services:
     container_name: moodly-auth
     expose:
       - "8081"
+    healthcheck:
+      test: "curl --fail --silent localhost:8081/actuator/health/readiness | grep UP || exit 1"
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
     environment:
       SPRING_APPLICATION_NAME: auth-service
       SPRING_PROFILES_ACTIVE: docker
@@ -141,6 +147,12 @@ services:
     container_name: moodly-user
     expose:
       - "8082"
+    healthcheck:
+      test: "curl --fail --silent localhost:8082/actuator/health/readiness | grep UP || exit 1"
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
     environment:
       SPRING_APPLICATION_NAME: user-service
       SPRING_PROFILES_ACTIVE: docker
@@ -184,6 +196,12 @@ services:
     container_name: moodly-product
     expose:
       - "8083"
+    healthcheck:
+      test: "curl --fail --silent localhost:8083/actuator/health/readiness | grep UP || exit 1"
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
     environment:
       SPRING_APPLICATION_NAME: product-service
       SPRING_PROFILES_ACTIVE: docker
@@ -224,6 +242,12 @@ services:
     container_name: moodly-cart
     expose:
       - "8084"
+    healthcheck:
+      test: "curl --fail --silent localhost:8084/actuator/health/readiness | grep UP || exit 1"
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
     environment:
       SPRING_APPLICATION_NAME: cart-service
       SPRING_PROFILES_ACTIVE: docker
@@ -264,6 +288,12 @@ services:
     container_name: moodly-order
     expose:
       - "8085"
+    healthcheck:
+      test: "curl --fail --silent localhost:8085/actuator/health/readiness | grep UP || exit 1"
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
     environment:
       SPRING_APPLICATION_NAME: order-service
       SPRING_PROFILES_ACTIVE: docker
@@ -304,6 +334,12 @@ services:
     container_name: moodly-notification
     expose:
       - "8086"
+    healthcheck:
+      test: "curl --fail --silent localhost:8086/actuator/health/readiness | grep UP || exit 1"
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
     environment:
       SPRING_APPLICATION_NAME: notification-service
       SPRING_PROFILES_ACTIVE: docker
@@ -354,6 +390,12 @@ services:
     container_name: moodly-coupon
     expose:
       - "8087"
+    healthcheck:
+      test: "curl --fail --silent localhost:8087/actuator/health/readiness | grep UP || exit 1"
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
     environment:
       SPRING_APPLICATION_NAME: coupon-service
       SPRING_PROFILES_ACTIVE: docker
@@ -394,6 +436,12 @@ services:
     container_name: moodly-payment
     expose:
       - "8088"
+    healthcheck:
+      test: "curl --fail --silent localhost:8088/actuator/health/readiness | grep UP || exit 1"
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
     environment:
       SPRING_APPLICATION_NAME: payment-service
       SPRING_PROFILES_ACTIVE: docker
