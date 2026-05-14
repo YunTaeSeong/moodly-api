@@ -6,7 +6,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.math.BigDecimal;
 
-@FeignClient(name = "coupon-service", url = "${coupon-service.base-url}")
+@FeignClient(
+        name = "coupon-service",
+        url = "${coupon-service.base-url}",
+        fallback = CouponInternalFallback.class
+)
 public interface CouponInternalClient {
 
     @GetMapping("/internal/coupon/payment/validate")

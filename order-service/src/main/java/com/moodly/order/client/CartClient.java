@@ -11,7 +11,8 @@ import java.util.List;
 
 @FeignClient(
         name = "cart-service",
-        url = "${cart-service.base-url}"
+        url = "${cart-service.base-url}",
+        fallback = CartFallback.class
 )
 public interface CartClient {
 

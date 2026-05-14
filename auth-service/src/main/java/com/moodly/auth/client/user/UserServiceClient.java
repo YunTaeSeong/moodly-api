@@ -15,7 +15,8 @@ import java.util.List;
 
 @FeignClient(
         name = "user-service",
-        url = "${user-service.url}"
+        url = "${user-service.url}",
+        fallback = UserFallback.class
 )
 public interface UserServiceClient {
 

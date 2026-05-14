@@ -10,7 +10,8 @@ import org.springframework.web.bind.annotation.RequestHeader;
 @Component
 @FeignClient(
         name = "auth-service",
-        url = "${auth-service.base-url}"
+        url = "${auth-service.base-url}",
+        fallback = AuthFallback.class
 )
 public interface AuthClient {
 

@@ -6,7 +6,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-@FeignClient(name = "order-service", url = "${order-service.base-url}")
+@FeignClient(
+        name = "order-service",
+        url = "${order-service.base-url}",
+        fallback = OrderFallback.class
+)
 public interface OrderServiceClient {
 
     @GetMapping("/internal/order/payment/{orderId}")
