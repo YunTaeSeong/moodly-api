@@ -31,4 +31,7 @@ dependencies {
 
     // Source: https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-starter-circuitbreaker-reactor-resilience4j
     implementation 'org.springframework.cloud:spring-cloud-starter-circuitbreaker-reactor-resilience4j'
+
+    // Spring Cloud Gateway + Redis RateLimiter
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis-reactive'
 }
