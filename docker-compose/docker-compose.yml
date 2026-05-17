@@ -8,7 +8,7 @@ services:
     ports:
       - "8071:8071"
     healthcheck:
-      test: "curl --fail --silent localhost:8071/actuator/health/readiness | grep UP || exit 1"
+      test: "curl --fail --silent localhost:8071/actuator/health | grep UP || exit 1"
       interval: 10s     # 상태 확인 주기
       timeout: 5s       # 제한 시간
       retries: 10       # 재시도 횟수
@@ -26,7 +26,7 @@ services:
     ports:
       - "8070:8070"
     healthcheck:
-      test: "curl --fail --silent localhost:8070/actuator/health/readiness | grep UP || exit 1"
+      test: "curl --fail --silent localhost:8070/actuator/health | grep UP || exit 1"
       interval: 10s
       timeout: 5s
       retries: 10
@@ -42,6 +42,12 @@ services:
     container_name: moodly-redis
     ports:
       - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 5s
     extends:
       file: common-config.yml
       service: network-deploy-service
@@ -77,6 +83,12 @@ services:
 
       # 단일 브로커면 1
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    healthcheck:
+      test: ["CMD-SHELL", "kafka-broker-api-versions --bootstrap-server localhost:9092 >/dev/null 2>&1"]
+      interval: 10s
+      timeout: 10s
+      retries: 15
+      start_period: 30s
     extends:
       file: common-config.yml
       service: network-deploy-service
@@ -103,7 +115,7 @@ services:
     expose:
       - "8081"
     healthcheck:
-      test: "curl --fail --silent localhost:8081/actuator/health/readiness | grep UP || exit 1"
+      test: "curl --fail --silent localhost:8081/actuator/health | grep UP || exit 1"
       interval: 10s
       timeout: 5s
       retries: 10
@@ -120,6 +132,8 @@ services:
       KAKAO_CLIENT_SECRET: ${KAKAO_CLIENT_SECRET}
       KAKAO_REDIRECT_URI: ${KAKAO_REDIRECT_URI}
     depends_on:
+      moodly-configserver:
+        condition: service_healthy
       moodly-auth-db:
         condition: service_healthy
     extends:
@@ -148,7 +162,7 @@ services:
     expose:
       - "8082"
     healthcheck:
-      test: "curl --fail --silent localhost:8082/actuator/health/readiness | grep UP || exit 1"
+      test: "curl --fail --silent localhost:8082/actuator/health | grep UP || exit 1"
       interval: 10s
       timeout: 5s
       retries: 10
@@ -197,7 +211,7 @@ services:
     expose:
       - "8083"
     healthcheck:
-      test: "curl --fail --silent localhost:8083/actuator/health/readiness | grep UP || exit 1"
+      test: "curl --fail --silent localhost:8083/actuator/health | grep UP || exit 1"
       interval: 10s
       timeout: 5s
       retries: 10
@@ -243,7 +257,7 @@ services:
     expose:
       - "8084"
     healthcheck:
-      test: "curl --fail --silent localhost:8084/actuator/health/readiness | grep UP || exit 1"
+      test: "curl --fail --silent localhost:8084/actuator/health | grep UP || exit 1"
       interval: 10s
       timeout: 5s
       retries: 10
@@ -289,7 +303,7 @@ services:
     expose:
       - "8085"
     healthcheck:
-      test: "curl --fail --silent localhost:8085/actuator/health/readiness | grep UP || exit 1"
+      test: "curl --fail --silent localhost:8085/actuator/health | grep UP || exit 1"
       interval: 10s
       timeout: 5s
       retries: 10
@@ -335,7 +349,7 @@ services:
     expose:
       - "8086"
     healthcheck:
-      test: "curl --fail --silent localhost:8086/actuator/health/readiness | grep UP || exit 1"
+      test: "curl --fail --silent localhost:8086/actuator/health | grep UP || exit 1"
       interval: 10s
       timeout: 5s
       retries: 10
@@ -391,7 +405,7 @@ services:
     expose:
       - "8087"
     healthcheck:
-      test: "curl --fail --silent localhost:8087/actuator/health/readiness | grep UP || exit 1"
+      test: "curl --fail --silent localhost:8087/actuator/health | grep UP || exit 1"
       interval: 10s
       timeout: 5s
       retries: 10
@@ -437,7 +451,7 @@ services:
     expose:
       - "8088"
     healthcheck:
-      test: "curl --fail --silent localhost:8088/actuator/health/readiness | grep UP || exit 1"
+      test: "curl --fail --silent localhost:8088/actuator/health | grep UP || exit 1"
       interval: 10s
       timeout: 5s
       retries: 10
@@ -477,6 +491,8 @@ services:
       SPRING_PROFILES_ACTIVE: docker
       JWT_SECRET: ${JWT_SECRET}
     depends_on:
+      moodly-redis:
+        condition: service_healthy
       moodly-configserver:
         condition: service_healthy
       moodly-auth:
