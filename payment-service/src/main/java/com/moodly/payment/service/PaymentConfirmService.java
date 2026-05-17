@@ -28,6 +28,7 @@ public class PaymentConfirmService {
 
     private static final String STATUS_PENDING_PAYMENT = "PENDING_PAYMENT";
     private static final String STATUS_PAYMENT_COMPLETED = "PAYMENT_COMPLETED";
+    private static final String ORDERS = "주문 ";
 
     private final OrderServiceClient orderServiceClient;
     private final CouponInternalClient couponInternalClient;
@@ -94,7 +95,7 @@ public class PaymentConfirmService {
                     log.warn("[Payment] re-fetch order after Toss concurrent error failed orderId={}", orderId, e);
                 }
             }
-            String orderName = "주문 " + orderId;
+            String orderName = ORDERS + orderId;
             paymentFailureRecorder.recordGatewayFailure(
                     orderId,
                     order.getUserId(),
