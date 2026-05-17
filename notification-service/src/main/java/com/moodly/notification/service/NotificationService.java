@@ -102,4 +102,21 @@ public class NotificationService {
                     notificationRepository.save(n);
                 });
     }
+
+    @Transactional
+    public void delete(Long userId, Long notificationId) {
+        Notification notification = notificationRepository.findById(notificationId)
+                .orElseThrow(() -> new BaseException(GlobalErrorCode.NOTIFICATION_NOT_FOUND));
+        if (!notification.getUserId().equals(userId)) {
+            throw new BaseException(GlobalErrorCode.MISSING_AUTHORIZATION);
+        }
+        notificationRepository.delete(notification);
+        log.info("[NotificationService] 알림 삭제: notificationId={}, userId={}", notificationId, userId);
+    }
+
+    @Transactional
+    public void deleteAll(Long userId) {
+        notificationRepository.deleteByUserId(userId);
+        log.info("[NotificationService] 알림 전체 삭제: userId={}", userId);
+    }
 }

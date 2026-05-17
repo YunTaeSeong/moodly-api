@@ -15,4 +15,6 @@ public interface NotificationRepository extends NotificationRepositoryCustom, Jp
     
     @Query("SELECT COUNT(n) FROM Notification n WHERE n.userId = :userId AND n.isRead = false")
     long countUnreadByUserId(@Param("userId") Long userId);
+
+    void deleteByUserId(Long userId);
 }

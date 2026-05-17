@@ -58,10 +58,30 @@ public class NotificationApiController {
         return ResponseEntity.ok().build();
     }
 
+    // 모두 읽기
     @PatchMapping("/read-all")
-    public ResponseEntity<Void> markAllAsRead(@RequestParam Long userId) {
+    public ResponseEntity<Void> markAllAsRead(
+            @RequestParam Long userId
+    ) {
         notificationService.markAllAsRead(userId);
         return ResponseEntity.ok().build();
+    }
+
+    // 알림 단건 삭제
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteNotification(
+            @PathVariable Long id,
+            @RequestParam Long userId
+    ) {
+        notificationService.delete(userId, id);
+        return ResponseEntity.noContent().build();
+    }
+
+    // 알림 전체 삭제
+    @DeleteMapping
+    public ResponseEntity<Void> deleteAllNotifications(@RequestParam Long userId) {
+        notificationService.deleteAll(userId);
+        return ResponseEntity.noContent().build();
     }
 
 }
