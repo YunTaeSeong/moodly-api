@@ -171,7 +171,7 @@ public class OrderService {
     }
 
     /**
-     * 주문 단건 삭제 -> OrderItem 먼저 삭제 후 Order 삭제
+     * 주문 단건 삭제 -> OrderItem 먼저 삭제 후 Order 삭제 (결제 대기만 허용)
      */
     @Transactional
     public void getOrderSelectedDelete(Long userId, Long orderId) {
@@ -180,6 +180,9 @@ public class OrderService {
 
         if (!order.getUserId().equals(userId)) {
             throw new BaseException(GlobalErrorCode.MISSING_AUTHORIZATION);
+        }
+        if (order.getStatus() != OrderStatus.PENDING_PAYMENT) {
+            throw new BaseException(GlobalErrorCode.ORDER_NOT_CANCELLABLE);
         }
 
         List<OrderItem> orderItems = orderItemRepository.findByOrderId(order.getId());
