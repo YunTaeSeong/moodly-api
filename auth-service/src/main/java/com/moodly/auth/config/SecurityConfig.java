@@ -3,8 +3,10 @@ package com.moodly.auth.config;
 import com.moodly.common.security.filter.JwtAuthenticationFilter;
 import com.moodly.common.security.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -26,9 +28,14 @@ public class SecurityConfig {
     private final JwtTokenProvider jwtTokenProvider;
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain(
+            HttpSecurity http,
+            @Autowired(required = false) CorsConfigurationSource corsConfigurationSource
+    ) throws Exception {
+        if (corsConfigurationSource != null) {
+            http.cors(cors -> cors.configurationSource(corsConfigurationSource));
+        }
         http
-                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
@@ -44,7 +51,9 @@ public class SecurityConfig {
         return http.build();
     }
 
+    /** Gateway(globalcors) 경유 시 CORS 중복 방지 — docker 프로필에서는 Gateway만 처리 */
     @Bean
+    @Profile("!docker")
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowedOrigins(List.of("http://localhost:3000")); // React
