@@ -39,6 +39,13 @@ public class SecurityConfig {
                         // 관리자 문의 API(프론트 호출)
                         .requestMatchers("/product/admin/**").authenticated()
 
+                        // 구매후기: 상품별 목록만 공개
+                        .requestMatchers(HttpMethod.GET, "/product/review/product/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/product/review/my").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/product/review/exists").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/product/review").authenticated()
+                        .requestMatchers("/product/admin/review/**").authenticated()
+
                         // 공개 API (상품 목록 조회, 카테고리 조회)
                         .requestMatchers(HttpMethod.GET, "/product/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/category/**").permitAll()

@@ -9,6 +9,7 @@ import com.moodly.order.domain.OrderItem;
 import com.moodly.order.dto.OrderDto;
 import com.moodly.order.dto.OrderItemDto;
 import com.moodly.order.request.CreateOrderRequest;
+import com.moodly.order.response.OrderItemReviewEligibilityResponse;
 import com.moodly.order.response.OrderPaymentSnapshotResponse;
 import com.moodly.order.enums.OrderStatus;
 import com.moodly.order.repository.OrderItemRepository;
@@ -237,6 +238,23 @@ public class OrderService {
         Order order = orderRepository.findByOrderId(orderId)
                 .orElseThrow(() -> new BaseException(GlobalErrorCode.ORDER_NOT_FOUND));
         order.markPaymentCancelled();
+    }
+
+    /**
+     * product-service: 구매후기 작성 전 주문 상품 라인 검증
+     */
+    @Transactional(readOnly = true)
+    public OrderItemReviewEligibilityResponse getOrderItemReviewEligibility(Long orderItemId, Long userId) {
+        if (userId == null) {
+            throw new BaseException(GlobalErrorCode.MISSING_AUTHORIZATION);
+        }
+        OrderItem item = orderItemRepository.findByIdWithOrder(orderItemId)
+                .orElseThrow(() -> new BaseException(GlobalErrorCode.ORDER_NOT_FOUND));
+        Order order = item.getOrder();
+        if (!order.getUserId().equals(userId)) {
+            throw new BaseException(GlobalErrorCode.MISSING_AUTHORIZATION);
+        }
+        return OrderItemReviewEligibilityResponse.from(item);
     }
 
 }

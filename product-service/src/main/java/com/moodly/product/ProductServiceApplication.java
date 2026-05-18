@@ -3,9 +3,11 @@ package com.moodly.product;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 @SpringBootApplication(scanBasePackages = "com.moodly")
+@EnableFeignClients
 @EnableJpaAuditing(auditorAwareRef = "productAuditAwareImpl")
 @ConfigurationPropertiesScan(basePackages = {
         "com.moodly.common.security"
