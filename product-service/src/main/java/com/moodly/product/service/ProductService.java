@@ -1,5 +1,6 @@
 package com.moodly.product.service;
 
+import com.moodly.common.cache.constant.CacheNames;
 import com.moodly.common.exception.BaseException;
 import com.moodly.common.exception.GlobalErrorCode;
 import com.moodly.product.domain.Category;
@@ -10,6 +11,7 @@ import com.moodly.product.repository.CategoryRepository;
 import com.moodly.product.repository.ProductRepository;
 import com.moodly.product.repository.SubCategoryRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -38,6 +40,10 @@ public class ProductService {
                 .toList();
     }
 
+    @Cacheable(
+            value = CacheNames.PRODUCT,
+            key = "#productId"
+    )
     public ProductDto getProductById(Long productId) {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new BaseException(GlobalErrorCode.PRODUCTID_NOT_FOUND));
