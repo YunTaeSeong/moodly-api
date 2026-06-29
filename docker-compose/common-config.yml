@@ -30,7 +30,7 @@ services:
     environment:
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://moodly-eurekaserver:8070/eureka/
 
-  microservice-db-config:
+  microservice-db-config: 
     extends:
       service: network-deploy-service
     image: mysql:8.0

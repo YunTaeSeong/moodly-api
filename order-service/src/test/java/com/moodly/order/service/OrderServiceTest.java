@@ -6,6 +6,7 @@ import com.moodly.order.client.CartClient;
 import com.moodly.order.client.CartItemResponse;
 import com.moodly.order.domain.Order;
 import com.moodly.order.domain.OrderItem;
+import com.moodly.order.enums.OrderStatus;
 import com.moodly.order.dto.OrderDto;
 import com.moodly.order.request.CreateOrderRequest;
 import com.moodly.order.repository.OrderItemRepository;
@@ -281,6 +282,7 @@ class OrderServiceTest {
 
         when(order.getUserId()).thenReturn(userId);
         when(order.getId()).thenReturn(orderId);
+        when(order.getStatus()).thenReturn(OrderStatus.PENDING_PAYMENT);
 
         when(orderRepository.findById(orderId)).thenReturn(Optional.of(order));
         when(orderItemRepository.findByOrderId(orderId)).thenReturn(items);
