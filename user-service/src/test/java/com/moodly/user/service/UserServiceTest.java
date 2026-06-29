@@ -48,7 +48,7 @@ class UserServiceTest {
         phoneNumber = "010-1111-2222";
     }
 
-    @DisplayName("회원가입 성공")
+    @DisplayName("회원가입 성공.")
     @Test
     void 회원가입_성공() {
         // given
