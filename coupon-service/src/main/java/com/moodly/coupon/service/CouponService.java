@@ -3,6 +3,7 @@ package com.moodly.coupon.service;
 import com.moodly.common.exception.BaseException;
 import com.moodly.common.exception.GlobalErrorCode;
 import com.moodly.common.security.principal.AuthPrincipal;
+import com.moodly.coupon.config.CouponFlashProperties;
 import com.moodly.coupon.config.CouponWelcomeProperties;
 import com.moodly.coupon.dto.CouponDto;
 import com.moodly.coupon.dto.UserCouponDto;
@@ -11,6 +12,7 @@ import com.moodly.coupon.entity.UserCoupon;
 import com.moodly.coupon.repository.CouponRepository;
 import com.moodly.coupon.repository.UserCouponRepository;
 import com.moodly.coupon.request.CouponCreateRequest;
+import com.moodly.coupon.response.FlashCouponStatusResponse;
 import com.moodly.coupon.response.UserCouponDetailResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -30,6 +33,7 @@ public class CouponService {
     private final CouponRepository couponRepository;
     private final UserCouponRepository userCouponRepository;
     private final CouponWelcomeProperties welcomeProperties;
+    private final CouponFlashProperties flashProperties;
     private static final String ORDER_ID_PREFIX = "ORDER-";
 
     // 쿠폰 조회
@@ -65,19 +69,53 @@ public class CouponService {
     // 받을 수 있는 쿠폰
     @Transactional(readOnly = true)
     public List<CouponDto> getReceivableCoupons(Long userId) {
-        Coupon welcome = couponRepository.findFirstByName(welcomeProperties.getCouponName()).orElse(null);
-        if (welcome == null) {
-            return List.of();
+        List<CouponDto> receivable = new ArrayList<>();
+        appendReceivableCoupon(receivable, flashProperties.getCouponName(), userId);
+        appendReceivableCoupon(receivable, welcomeProperties.getCouponName(), userId);
+        return receivable;
+    }
+
+    // 홈 배너: 선착순 쿠폰 실시간 상태 (비로그인 조회 가능)
+    @Transactional(readOnly = true)
+    public FlashCouponStatusResponse getFlashCouponStatus(Long userId) {
+        Coupon coupon = couponRepository.findFirstByName(flashProperties.getCouponName())
+                .orElseThrow(() -> new BaseException(GlobalErrorCode.COUPON_NOT_FOUND));
+
+        int total = coupon.getTotalQuantity() != null ? coupon.getTotalQuantity() : 0;
+        int issued = coupon.getIssuedQuantity() != null ? coupon.getIssuedQuantity() : 0;
+        int remaining = Math.max(total - issued, 0);
+        boolean exhausted = total > 0 && issued >= total;
+
+        boolean alreadyReceived = userId != null
+                && userCouponRepository.existsByUserIdAndCouponId(userId, coupon.getId());
+
+        return FlashCouponStatusResponse.builder()
+                .couponId(coupon.getId())
+                .name(coupon.getName())
+                .discount(coupon.getDiscount())
+                .discountType(coupon.getDiscountType())
+                .totalQuantity(total)
+                .issuedQuantity(issued)
+                .remainingQuantity(remaining)
+                .exhausted(exhausted)
+                .alreadyReceived(alreadyReceived)
+                .build();
+    }
+
+    private void appendReceivableCoupon(List<CouponDto> target, String couponName, Long userId) {
+        Coupon coupon = couponRepository.findFirstByName(couponName).orElse(null);
+        if (coupon == null) {
+            return;
         }
-        if (userCouponRepository.existsByUserIdAndCouponId(userId, welcome.getId())) {
-            return List.of();
+        if (userCouponRepository.existsByUserIdAndCouponId(userId, coupon.getId())) {
+            return;
         }
         try {
-            welcome.validateIssuable();
+            coupon.validateIssuable();
         } catch (BaseException e) {
-            return List.of();
+            return;
         }
-        return List.of(CouponDto.fromEntity(welcome));
+        target.add(CouponDto.fromEntity(coupon));
     }
 
     /**
@@ -107,7 +145,7 @@ public class CouponService {
     // 쿠폰 발행
     @Transactional
     public UserCouponDto issue(Long userId, Long couponId) {
-        Coupon coupon = couponRepository.findById(couponId)
+        Coupon coupon = couponRepository.findByWithLock(couponId)
                 .orElseThrow(() -> new BaseException(GlobalErrorCode.COUPON_NOT_FOUND));
 
         // 1. 발급 기간 검증

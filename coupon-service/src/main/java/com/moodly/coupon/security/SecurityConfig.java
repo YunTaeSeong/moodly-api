@@ -6,6 +6,7 @@ import com.moodly.common.security.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -35,6 +36,7 @@ public class SecurityConfig {
                         // 내부 호출 전용 (Feign)
                         .requestMatchers("/internal/**").permitAll()
                         .requestMatchers("/actuator/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/coupon/flash/status").permitAll()
 
                         // 장바구니 API는 로그인 후 접근
                         .anyRequest().authenticated()

@@ -2,6 +2,8 @@ package com.moodly.coupon.service;
 
 import com.moodly.common.exception.BaseException;
 import com.moodly.common.exception.GlobalErrorCode;
+import com.moodly.coupon.config.CouponFlashProperties;
+import com.moodly.coupon.config.CouponWelcomeProperties;
 import com.moodly.coupon.dto.UserCouponDto;
 import com.moodly.coupon.entity.Coupon;
 import com.moodly.coupon.entity.UserCoupon;
@@ -35,6 +37,12 @@ class CouponServiceTest {
     @Mock
     private UserCouponRepository userCouponRepository;
 
+    @Mock
+    private CouponWelcomeProperties welcomeProperties;
+
+    @Mock
+    private CouponFlashProperties flashProperties;
+
     @Test
     @DisplayName("쿠폰 발행 : 성공")
     void 쿠폰_발행_성공() {
@@ -44,7 +52,7 @@ class CouponServiceTest {
 
         Coupon coupon = mock(Coupon.class);
 
-        when(couponRepository.findById(couponId)).thenReturn(Optional.of(coupon));
+        when(couponRepository.findByWithLock(couponId)).thenReturn(Optional.of(coupon));
 
         when(userCouponRepository.existsByUserIdAndCouponId(userId, couponId)).thenReturn(false);
 
@@ -70,7 +78,7 @@ class CouponServiceTest {
         Long userId = 1L;
         Long couponId = 10L;
 
-        when(couponRepository.findById(couponId)).thenReturn(Optional.empty());
+        when(couponRepository.findByWithLock(couponId)).thenReturn(Optional.empty());
 
         // when
         BaseException baseException = assertThrows(
@@ -80,7 +88,7 @@ class CouponServiceTest {
 
         // then
         assertEquals(GlobalErrorCode.COUPON_NOT_FOUND, baseException.getErrorCode());
-        verify(couponRepository).findById(couponId);
+        verify(couponRepository).findByWithLock(couponId);
     }
 
     @Test
@@ -92,7 +100,7 @@ class CouponServiceTest {
 
         Coupon coupon = mock(Coupon.class);
 
-        when(couponRepository.findById(couponId)).thenReturn(Optional.of(coupon));
+        when(couponRepository.findByWithLock(couponId)).thenReturn(Optional.of(coupon));
         when(userCouponRepository.existsByUserIdAndCouponId(userId, couponId)).thenReturn(true);
 
         // when
@@ -115,7 +123,7 @@ class CouponServiceTest {
 
         Coupon coupon = mock(Coupon.class);
 
-        when(couponRepository.findById(couponId)).thenReturn(Optional.of(coupon));
+        when(couponRepository.findByWithLock(couponId)).thenReturn(Optional.of(coupon));
         when(userCouponRepository.existsByUserIdAndCouponId(userId, couponId)).thenReturn(false);
         doThrow(new BaseException(GlobalErrorCode.COUPON_EXHAUSTED)).when(coupon).incrementIssuedQuantity();
 
@@ -209,7 +217,7 @@ class CouponServiceTest {
 
         when(userCouponRepository.findByIdAndUserId(userCouponId, userId)).thenReturn(Optional.of(userCoupon));
 
-        when(couponRepository.findById(couponId)).thenReturn(Optional.of(coupon));
+        when(couponRepository.findByWithLock(couponId)).thenReturn(Optional.of(coupon));
 
         // when
         UserCouponDto result = couponService.use(userId, userCouponId, orderId, orderAmount);

@@ -2,6 +2,7 @@ package com.moodly.coupon.controller;
 
 import com.moodly.common.security.principal.AuthPrincipal;
 import com.moodly.coupon.dto.CouponDto;
+import com.moodly.coupon.response.FlashCouponStatusResponse;
 import com.moodly.coupon.response.UserCouponDetailResponse;
 import com.moodly.coupon.response.UserCouponResponse;
 import com.moodly.coupon.service.CouponService;
@@ -18,6 +19,15 @@ import java.util.List;
 public class CouponApiController {
 
     private final CouponService couponService;
+
+    // 홈 배너: 선착순 쿠폰 실시간 상태 (비로그인 조회 가능)
+    @GetMapping("/flash/status")
+    public FlashCouponStatusResponse getFlashCouponStatus(
+            @AuthenticationPrincipal AuthPrincipal principal
+    ) {
+        Long userId = principal != null ? principal.getUserId() : null;
+        return couponService.getFlashCouponStatus(userId);
+    }
 
     // 받을 수 있는 쿠폰 : 경로가 userCouponId와 겹치지 않아야 함
     @GetMapping("/receivable")
@@ -42,28 +52,14 @@ public class CouponApiController {
         return couponService.getAllUserCouponDetails(principal.getUserId());
     }
 
-//    // 쿠폰 발급
-//    @PostMapping("/{couponId}/issue")
-//    public UserCouponResponse issue(
-//            @AuthenticationPrincipal AuthPrincipal principal,
-//            @PathVariable Long couponId
-//    ) {
-//        return UserCouponResponse.response(couponService.issue(principal.getUserId(), couponId));
-//    }
-
-    // 쿠폰 발급 부하테스트용
-    // JWT 있으면 → principal userId 사용
-    // JWT 없으면 → userId = 1 (Locust 테스트용)
+    // 쿠폰 발급
     @PostMapping("/{couponId}/issue")
     public UserCouponResponse issue(
             @AuthenticationPrincipal AuthPrincipal principal,
             @PathVariable Long couponId
     ) {
-
-        Long userId = principal != null ? principal.getUserId() : 1L;
-
         return UserCouponResponse.response(
-                couponService.issue(userId, couponId)
+                couponService.issue(principal.getUserId(), couponId)
         );
     }
 

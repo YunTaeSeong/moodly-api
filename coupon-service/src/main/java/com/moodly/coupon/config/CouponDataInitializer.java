@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 
 // 신규회원 쿠폰 (전 상품 10%, 최소 주문 15,000원, 발급일 기준 30일)
+// 선착순 쿠폰 (전 상품 70%, 1000명 한정, 발급일 기준 7일)
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -22,10 +23,16 @@ public class CouponDataInitializer implements ApplicationRunner {
 
     private final CouponRepository couponRepository;
     private final CouponWelcomeProperties welcomeProperties;
+    private final CouponFlashProperties flashProperties;
 
     @Override
     @Transactional
     public void run(ApplicationArguments args) {
+        initWelcomeCoupon();
+        initFlashCoupon();
+    }
+
+    private void initWelcomeCoupon() {
         String name = welcomeProperties.getCouponName();
         if (couponRepository.findFirstByName(name).isPresent()) {
             int updated = couponRepository.updateMinPurchaseByName(name, WELCOME_MIN_PURCHASE);
@@ -47,5 +54,25 @@ public class CouponDataInitializer implements ApplicationRunner {
                 .build();
         couponRepository.save(coupon);
         log.info("[CouponDataInitializer] 신규회원 쿠폰 마스터 등록: name={}", name);
+    }
+
+    private void initFlashCoupon() {
+        String name = flashProperties.getCouponName();
+        if (couponRepository.findFirstByName(name).isPresent()) {
+            return;
+        }
+        Coupon coupon = Coupon.builder()
+                .name(name)
+                .discount(new BigDecimal("70"))
+                .discountType(DiscountType.PERCENT)
+                .minPurchase(BigDecimal.ZERO)
+                .validStartDate(null)
+                .validEndDate(null)
+                .validDays(7)
+                .totalQuantity(flashProperties.getTotalQuantity())
+                .issuedQuantity(0)
+                .build();
+        couponRepository.save(coupon);
+        log.info("[CouponDataInitializer] 선착순 쿠폰 마스터 등록: name={}, totalQuantity={}", name, flashProperties.getTotalQuantity());
     }
 }
