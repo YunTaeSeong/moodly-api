@@ -404,8 +404,8 @@ services:
       dockerfile: coupon-service/Dockerfile
     image: tsyundeveloper/moodly-coupon:latest
     container_name: moodly-coupon
-    expose:
-      - "8087"
+    ports:
+      - "8087:8087"   # load-test·로컬 디버깅용 (컨테이너 간 통신은 moodly-coupon:8087)
     healthcheck:
       test: "curl --fail --silent localhost:8087/actuator/health | grep UP || exit 1"
       interval: 10s

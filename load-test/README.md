@@ -4,10 +4,21 @@
 
 ## 설치
 
+**로컬 하이브리드** (IntelliJ `local` + 인프라 Docker)
+
 ```bash
 cd moodly-api/docker-compose && docker compose up -d
 # IntelliJ: CouponServiceApplication (profile: local)
+```
 
+**전체 Docker** (`--profile app` — coupon-service 포함)
+
+```bash
+cd moodly-api/docker-compose && docker compose --profile app up -d --build
+# 호스트 8087 publish → reset·Locust 동일
+```
+
+```bash
 cd moodly-api/load-test
 python3 -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
@@ -63,6 +74,7 @@ docker compose down && docker compose up -d
 
 | 증상 | 해결 |
 |------|------|
+| **8087 연결 실패** | `docker compose --profile app` 기동 여부, `curl http://localhost:8087/actuator/health` |
 | **8089 접속 불가** | `locust -f locustfile.py --host=http://localhost:8087` 실행 여부 확인 |
 | **Failures ~90%** | issue API 403 → coupon-service `local` 프로필로 재시작 |
 | **403 on issue** | `application-local.yml`에 `load-test.enabled: true` 확인 후 재시작 |
