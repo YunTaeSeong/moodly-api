@@ -2,6 +2,7 @@ package com.moodly.coupon;
 
 import org.springframework.boot.SpringApplication;
 import com.moodly.coupon.config.CouponFlashProperties;
+import com.moodly.coupon.config.CouponLoadTestProperties;
 import com.moodly.coupon.config.CouponWelcomeProperties;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
@@ -9,7 +10,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 @SpringBootApplication(scanBasePackages = "com.moodly")
-@EnableConfigurationProperties({CouponWelcomeProperties.class, CouponFlashProperties.class})
+@EnableConfigurationProperties({CouponWelcomeProperties.class, CouponFlashProperties.class, CouponLoadTestProperties.class})
 @ConfigurationPropertiesScan(basePackages = {
         "com.moodly.common.security"
 })

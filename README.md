@@ -314,6 +314,15 @@ Gateway 호출 예: `POST http://localhost:8072/AUTH-SERVICE/auth/login`
 
 > `UserService.register`(회원가입)에는 쿠폰 호출이 없습니다. 자동 발급 API(`issueWelcomeCouponForNewUser`)는 있으나 user-service와 연동되어 있지 않습니다.
 
+#### 선착순 70% 할인 쿠폰 (홈 배너)
+
+| API | 권한 | 설명 |
+|-----|------|------|
+| `GET /coupon/flash/status` | 공개 | 잔여 수량·소진 여부 (배너 폴링) |
+| `POST /coupon/{couponId}/issue` | 로그인 | 선착순 **1000장** 발급 (DB row lock) |
+
+프론트 홈 배너에서 클릭 발급. local/docker에서 Locust 부하 테스트 지원 → [부하 테스트](#부하-테스트-locust)
+
 ---
 
 ### notification-service (8086)
@@ -511,6 +520,8 @@ moodly-api/
 ├── payment-service/
 ├── coupon-service/
 ├── notification-service/
+├── load-test/                # Locust 선착순 쿠폰 부하 테스트
+├── png/                      # 부하 테스트 결과 스크린샷
 └── docker-compose/           # compose, .env.example
 ```
 
@@ -521,6 +532,45 @@ moodly-api/
 ```bash
 ./gradlew test
 ```
+
+---
+
+## 부하 테스트 (Locust)
+
+홈 배너 **선착순 1000장** 쿠폰 API를 Locust로 검증합니다. (local/docker 전용, `moodly.coupon.load-test.enabled=true`)
+
+### 설치 · 실행
+
+```bash
+cd docker-compose && docker compose up -d
+# IntelliJ: CouponServiceApplication (profile: local)
+
+cd load-test
+python3 -m venv .venv && source .venv/bin/activate
+pip install -r requirements.txt
+
+./scripts/reset_flash_coupon.sh
+locust -f locustfile.py --host=http://localhost:8087
+```
+
+http://localhost:8089 → Users **3000**, Ramp up **200**, Host `http://localhost:8087` → **Start**
+
+### 결과 (local 1대 기준)
+
+| 지표 | 값 |
+|------|-----|
+| Failures | **0%** |
+| RPS | **~817** |
+| Median | ~4s |
+| 95%ile | ~6.4s |
+
+![3000명 부하테스트 결과](png/3000-users-load-test-result.png)
+
+테스트 후: `curl -s http://localhost:8087/coupon/flash/status` → `issuedQuantity: 1000`
+
+**재실행:** `./scripts/reset_flash_coupon.sh` → locust 다시 Start
+
+상세 가이드: [`load-test/README.md`](load-test/README.md)
 
 ---
 
@@ -541,3 +591,4 @@ moodly-api/
 
 - [moodly-config README](https://github.com/YunTaeSeong/moodly-config/blob/main/README.md)
 - [moodly-web README](https://github.com/YunTaeSeong/moodly-web/blob/main/README.md)
+- [load-test README](load-test/README.md) — Locust 선착순 쿠폰 부하 테스트

@@ -20,6 +20,10 @@ public interface CouponRepository extends JpaRepository<Coupon, Long> {
     Optional<Coupon> findByWithLock(@Param("id") Long id);
 
     @Modifying(clearAutomatically = true)
+    @Query("UPDATE Coupon c SET c.issuedQuantity = :issuedQuantity WHERE c.id = :id")
+    int updateIssuedQuantity(@Param("id") Long id, @Param("issuedQuantity") int issuedQuantity);
+
+    @Modifying(clearAutomatically = true)
     @Query("UPDATE Coupon c SET c.minPurchase = :minPurchase WHERE c.name = :name")
     int updateMinPurchaseByName(@Param("name") String name, @Param("minPurchase") BigDecimal minPurchase);
 

@@ -102,6 +102,27 @@ public class CouponService {
                 .build();
     }
 
+    /** 부하 테스트: 선착순 쿠폰 ID */
+    @Transactional(readOnly = true)
+    public Long getFlashCouponId() {
+        return couponRepository.findFirstByName(flashProperties.getCouponName())
+                .orElseThrow(() -> new BaseException(GlobalErrorCode.COUPON_NOT_FOUND))
+                .getId();
+    }
+
+    /** 부하 테스트 재실행: 선착순 쿠폰 발급 이력·수량 초기화 */
+    @Transactional
+    public FlashCouponStatusResponse resetFlashCouponForLoadTest() {
+        Coupon coupon = couponRepository.findFirstByName(flashProperties.getCouponName())
+                .orElseThrow(() -> new BaseException(GlobalErrorCode.COUPON_NOT_FOUND));
+
+        userCouponRepository.deleteByCouponId(coupon.getId());
+        couponRepository.updateIssuedQuantity(coupon.getId(), 0);
+
+        log.info("[CouponService] 선착순 쿠폰 부하테스트 초기화 couponId={}", coupon.getId());
+        return getFlashCouponStatus(null);
+    }
+
     private void appendReceivableCoupon(List<CouponDto> target, String couponName, Long userId) {
         Coupon coupon = couponRepository.findFirstByName(couponName).orElse(null);
         if (coupon == null) {

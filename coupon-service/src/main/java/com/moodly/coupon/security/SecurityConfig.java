@@ -37,6 +37,7 @@ public class SecurityConfig {
                         .requestMatchers("/internal/**").permitAll()
                         .requestMatchers("/actuator/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/coupon/flash/status").permitAll()
+                        .requestMatchers("/internal/coupon/load-test/**").permitAll()
 
                         // 장바구니 API는 로그인 후 접근
                         .anyRequest().authenticated()

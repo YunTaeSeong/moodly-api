@@ -217,7 +217,7 @@ class CouponServiceTest {
 
         when(userCouponRepository.findByIdAndUserId(userCouponId, userId)).thenReturn(Optional.of(userCoupon));
 
-        when(couponRepository.findByWithLock(couponId)).thenReturn(Optional.of(coupon));
+        when(couponRepository.findById(couponId)).thenReturn(Optional.of(coupon));
 
         // when
         UserCouponDto result = couponService.use(userId, userCouponId, orderId, orderAmount);

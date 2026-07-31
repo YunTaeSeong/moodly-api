@@ -1,0 +1,5 @@
+# local 프로필 전용 (Config Server 미반영 시에도 부하 테스트 API 활성화)
+moodly:
+  coupon:
+    load-test:
+      enabled: true
