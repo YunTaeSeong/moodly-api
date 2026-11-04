@@ -31,6 +31,11 @@ public class TossPaymentsClient {
     private final TossPaymentsProperties properties;
     private final ObjectMapper objectMapper;
 
+    /**
+     * (2) 서버 승인 단계 — 토스 POST /v1/payments/confirm.
+     * 실패 시 log [Toss] confirm failed … body=…
+     * PaymentConfirmService 가 DB 실패 이력 후 PAYMENT_005.
+     */
     public TossConfirmResult confirm(String paymentKey, String orderId, BigDecimal amount) {
         if (properties.getSecretKey() == null || properties.getSecretKey().isBlank()) {
             throw new BaseException(GlobalErrorCode.PAYMENT_CONFIG_ERROR, "Toss secret key is not configured");

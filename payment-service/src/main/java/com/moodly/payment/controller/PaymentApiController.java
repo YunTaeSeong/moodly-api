@@ -24,7 +24,8 @@ public class PaymentApiController {
     private final PaymentCancelService paymentCancelService;
 
     /**
-     * Toss 결제 위젯 성공 URL 이후, 프론트에서 전달한 값으로 승인 확정
+     * Toss success URL 이후 프론트가 호출 — {PaymentConfirmService -> confirm} 위임.
+     * (4) 검증 실패는 토스 호출 전 4xx · (2) PG 승인 거절은 502 + DB 실패 이력.
      */
     @PostMapping("/confirm")
     public PaymentConfirmResponse confirm(

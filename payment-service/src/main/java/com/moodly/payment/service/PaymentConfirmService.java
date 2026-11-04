@@ -38,7 +38,9 @@ public class PaymentConfirmService {
     private final PaymentPostConfirmService paymentPostConfirmService;
 
     /**
-     * 프론트에서 전달한 paymentKey, orderId, amount 로 Toss 승인 및 주문·결제 반영
+     * 프론트 success URL 이후 승인 확정 (결제창 PG 실패 (1)은 이 API까지 오지 않음).
+     * 순서: 주문 조회 → (4) assertBaseOrderConstraints·상태·쿠폰 → (2) Toss confirm → 주문 PAYMENT_COMPLETED.
+     * (2) Toss 거절 시 PaymentFailureRecorder → payments FAILED, payment_logs CONFIRM_FAILED.
      */
     public PaymentConfirmResponse confirm(Long userId, PaymentConfirmRequest request) {
         String orderId = request.getOrderId();
@@ -126,6 +128,7 @@ public class PaymentConfirmService {
         }
     }
 
+    /** (4) 토스 승인 API 호출 전 검증 — 본인·금액·배송지 (PAYMENT_001, PAYMENT_004 등). */
     private void assertBaseOrderConstraints(Long userId, BigDecimal paidAmount, OrderPaymentSnapshotDto order) {
         if (!Objects.equals(order.getUserId(), userId)) {
             throw new BaseException(GlobalErrorCode.MISSING_AUTHORIZATION);
@@ -147,6 +150,7 @@ public class PaymentConfirmService {
         return c.contains("ALREADY_PROCESSING") || c.contains("ALREADY_PROCESSED");
     }
 
+    /** (4) 토스 호출 전 쿠폰 검증 — coupon-service Feign (COUPON_*). */
     private void validateCoupon(OrderPaymentSnapshotDto order) {
         try {
             couponInternalClient.validateForOrderPayment(

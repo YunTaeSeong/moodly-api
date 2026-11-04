@@ -25,6 +25,7 @@ public class PaymentFailureRecorder {
     private final PaymentRepository paymentRepository;
     private final PaymentLogRepository paymentLogRepository;
 
+    /** (2) Toss 승인 API 거절 시 — confirm 트랜잭션과 분리해 payments FAILED + payment_logs(CONFIRM_FAILED, raw_payload). */
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void recordGatewayFailure(
             String orderId,
