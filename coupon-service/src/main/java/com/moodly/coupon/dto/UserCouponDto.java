@@ -1,6 +1,6 @@
 package com.moodly.coupon.dto;
 
-import com.moodly.coupon.entity.UserCoupon;
+import com.moodly.coupon.domain.UserCoupon;
 import com.moodly.coupon.enums.UserCouponStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

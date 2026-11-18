@@ -1,6 +1,6 @@
 package com.moodly.coupon.repository;
 
-import com.moodly.coupon.entity.UserCoupon;
+import com.moodly.coupon.domain.UserCoupon;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

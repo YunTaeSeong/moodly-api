@@ -1,6 +1,6 @@
 package com.moodly.coupon.config;
 
-import com.moodly.coupon.entity.Coupon;
+import com.moodly.coupon.domain.Coupon;
 import com.moodly.coupon.enums.DiscountType;
 import com.moodly.coupon.repository.CouponRepository;
 import lombok.RequiredArgsConstructor;

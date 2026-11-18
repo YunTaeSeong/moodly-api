@@ -1,7 +1,7 @@
 package com.moodly.coupon.response;
 
-import com.moodly.coupon.entity.Coupon;
-import com.moodly.coupon.entity.UserCoupon;
+import com.moodly.coupon.domain.Coupon;
+import com.moodly.coupon.domain.UserCoupon;
 import com.moodly.coupon.enums.DiscountType;
 import com.moodly.coupon.enums.UserCouponStatus;
 import lombok.AllArgsConstructor;

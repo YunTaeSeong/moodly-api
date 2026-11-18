@@ -1,6 +1,6 @@
 package com.moodly.coupon.dto;
 
-import com.moodly.coupon.entity.Coupon;
+import com.moodly.coupon.domain.Coupon;
 import com.moodly.coupon.enums.DiscountType;
 import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;

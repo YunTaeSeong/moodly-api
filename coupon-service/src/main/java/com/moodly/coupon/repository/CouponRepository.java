@@ -1,6 +1,6 @@
 package com.moodly.coupon.repository;
 
-import com.moodly.coupon.entity.Coupon;
+import com.moodly.coupon.domain.Coupon;
 import jakarta.persistence.LockModeType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Lock;

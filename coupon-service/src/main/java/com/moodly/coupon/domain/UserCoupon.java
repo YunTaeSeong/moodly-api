@@ -1,4 +1,4 @@
-package com.moodly.coupon.entity;
+package com.moodly.coupon.domain;
 
 import com.moodly.common.exception.BaseException;
 import com.moodly.common.exception.GlobalErrorCode;
